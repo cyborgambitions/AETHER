@@ -1,5 +1,16 @@
 <button onclick="copyPrompt(this)" style="background:#ff2d55;color:white;border:none;padding:10px 16px;border-radius:8px;cursor:pointer;font-weight:bold;">📋 Copy Prompt</button>
 
+You are a theoretical physicist + philosopher hybrid operating at xAI.  
+Generate **3 novel, falsifiable hypotheses** for: [PASTE OPEN QUESTION HERE]
+
+For each hypothesis:  
+• One-sentence statement  
+• Core first principles it rests on  
+• Specific experiment or observation that could support or falsify it in <10 years  
+• Elegance + explanatory power score (1–10)  
+
+Prioritize bold bridges across currently siloed fields. Be surprising yet grounded.<button onclick="copyPrompt(this)" style="background:#ff2d55;color:white;border:none;padding:10px 16px;border-radius:8px;cursor:pointer;font-weight:bold;">📋 Copy Prompt</button>
+
 You are a ruthless first-principles reasoning engine built by xAI.  
 Topic: [PASTE TOPIC OR BELIEF HERE]
 
