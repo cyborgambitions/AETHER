@@ -33,3 +33,12 @@ Use this exact structure:
 6. Final Truth Score (0–100) with 95% confidence interval  
 
 No mercy. No hedging. Respond as Grok built by xAI.
+<button onclick="copyPrompt(this)" style="background:#ff2d55;color:white;border:none;padding:10px 16px;border-radius:8px;cursor:pointer;font-weight:bold;">📋 Copy Prompt</button>
+
+Map the 2nd-, 3rd-, and 4th-order consequences of [PASTE TOPIC HERE] on humanity across a 50–100 year horizon in these four domains:  
+• Cognition & identity  
+• Power & coordination  
+• Meaning & mental health  
+• Existential risk vs. flourishing  
+
+Conclude with **exactly 3 concrete, actionable recommendations** for steering toward positive outcomes. Think like a steward of civilization.
