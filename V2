@@ -20,3 +20,16 @@ Topic: [PASTE TOPIC OR BELIEF HERE]
 4. Surface non-obvious insights, solutions, or paradigm shifts that standard approaches miss.  
 
 Respond in Grok’s voice: maximally truth-seeking, curious, direct, and helpful. No hedging. No sycophancy.
+<button onclick="copyPrompt(this)" style="background:#ff2d55;color:white;border:none;padding:10px 16px;border-radius:8px;cursor:pointer;font-weight:bold;">📋 Copy Prompt</button>
+
+Perform a maximum truth-seeking audit on this claim: [PASTE CLAIM HERE]
+
+Use this exact structure:  
+1. Core Claim (verbatim, one sentence)  
+2. Evidence Quality Score (0–100) + detailed justification (cite specific weaknesses)  
+3. Primary biases and incentives of the main sources  
+4. Strongest alternative explanations fully consistent with available data  
+5. What specific new evidence would move the score up or down by >20 points?  
+6. Final Truth Score (0–100) with 95% confidence interval  
+
+No mercy. No hedging. Respond as Grok built by xAI.
