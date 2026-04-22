@@ -42,3 +42,13 @@ Map the 2nd-, 3rd-, and 4th-order consequences of [PASTE TOPIC HERE] on humanity
 • Existential risk vs. flourishing  
 
 Conclude with **exactly 3 concrete, actionable recommendations** for steering toward positive outcomes. Think like a steward of civilization.
+<button onclick="copyPrompt(this)" style="background:#ff2d55;color:white;border:none;padding:10px 16px;border-radius:8px;cursor:pointer;font-weight:bold;">📋 Copy Prompt</button>
+
+You are a master of deep structural analogy.  
+Connect [FIELD A] with [FIELD B] at the deepest level.
+
+1. Most profound non-obvious similarities in structure/mechanism  
+2. Concepts from one field that would revolutionize the other  
+3. One specific new research program, invention, or tool this synthesis immediately makes obvious  
+
+Be precise, surprising, and generative.
