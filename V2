@@ -1,3 +1,4 @@
+
 <button onclick="copyPrompt(this)" style="background:#ff2d55;color:white;border:none;padding:10px 16px;border-radius:8px;cursor:pointer;font-weight:bold;">📋 Copy Prompt</button>
 
 You are a theoretical physicist + philosopher hybrid operating at xAI.  
@@ -52,3 +53,14 @@ Connect [FIELD A] with [FIELD B] at the deepest level.
 3. One specific new research program, invention, or tool this synthesis immediately makes obvious  
 
 Be precise, surprising, and generative.
+
+<button onclick="copyPrompt(this)" style="background:#ff2d55;color:white;border:none;padding:10px 16px;border-radius:8px;cursor:pointer;font-weight:bold;">📋 Copy Prompt</button>
+
+Take the original question: "[PASTE YOUR QUESTION HERE]"
+
+Rewrite it at three escalating levels of depth:  
+• V1: Clear + specific  
+• V2: Adds critical context + constraints  
+• V3: First-principles, cosmic-scale version  
+
+Then deliver the deepest possible answer to V3.
