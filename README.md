@@ -1,4 +1,4 @@
-# 👋 Hey, I'm Melissa — @Link-MIND
+# 👋 Hey, I'm Melissa — @link_mindset
 
 **A G**enerally **I**ntelligent human  
 **Self-appointed head cheerleader for the USMC** 🇺🇸 **and everything Elon** 🚀
