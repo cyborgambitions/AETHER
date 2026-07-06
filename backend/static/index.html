@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AETHER • First Principles</title>
+  <title>AETHER • Space Carnival of First Principles</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
@@ -187,6 +187,36 @@
         url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22 viewBox=%220 0 300 300%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.75%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22300%22 height=%22300%22 filter=%22url(%23n)%22 opacity=%220.04%22/%3E%3C/svg%3E');
       background-size: cover;
     }
+
+    /* SPACE CARNIVAL GRAPHICS BOOST */
+    .carnival-glow {
+      box-shadow: 0 0 25px rgba(255, 46, 99, 0.3),
+                  0 0 50px rgba(103, 246, 255, 0.2);
+    }
+
+    .marquee {
+      background: linear-gradient(90deg, #ff2e63, #ffd700, #67f6ff, #c084fc, #ff2e63);
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: carnival-marquee 3s linear infinite;
+    }
+
+    @keyframes carnival-marquee {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 300% 50%; }
+    }
+
+    .holo-card.carnival-hover:hover {
+      box-shadow: 0 0 0 1px #ff2e63,
+                  0 0 30px rgba(255, 46, 99, 0.25),
+                  0 25px 50px -12px rgb(0 0 0 / 0.4);
+      transform: translateY(-3px) rotate(0.5deg);
+    }
+
+    .festive-text {
+      text-shadow: 0 0 10px #ffd700, 0 0 20px #ff2e63;
+    }
   </style>
 </head>
 <body class="bg-[#05050f] text-white overflow-x-hidden">
@@ -205,6 +235,8 @@
             <div class="relative w-11 h-11 rounded-2xl bg-[#05050f] flex items-center justify-center border border-white/20">
               <i class="fa-solid fa-infinity text-3xl bg-gradient-to-br from-[#67f6ff] to-[#c084fc] bg-clip-text text-transparent"></i>
             </div>
+            <!-- Tiny carnival sparkle accent -->
+            <div class="absolute -top-0.5 -right-0.5 w-3 h-3 text-[#ffd700] animate-pulse"><i class="fa-solid fa-star text-[10px]"></i></div>
           </div>
           <div>
             <div class="font-display text-4xl tracking-[-2.5px] font-semibold">AETHER</div>
@@ -249,8 +281,8 @@
   <div class="relative pt-20 pb-16 px-6 max-w-screen-2xl mx-auto z-10">
     <div class="max-w-5xl mx-auto text-center pt-14">
       <div class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-white/5 border border-white/10 text-xs tracking-[2px] mb-6">
-        <div class="w-1.5 h-1.5 bg-[#67f6ff] rounded-full animate-pulse"></div>
-        POWERED BY GROK • BUILT FOR TRUTH
+        <div class="w-1.5 h-1.5 bg-[#ff2e63] rounded-full animate-pulse"></div>
+        <span class="marquee font-medium">SPACE CARNIVAL OF IDEAS</span>
       </div>
 
       <h1 class="font-display text-7xl md:text-[92px] leading-[0.92] tracking-[-6.5px] font-semibold mb-6">
@@ -259,18 +291,18 @@
       </h1>
       
       <p class="max-w-md mx-auto text-xl text-white/60 mb-9">
-        A futuristic interface for first-principles reasoning.<br>
-        Break down reality. Rebuild it better.
+        First principles meets cosmic carnival.<br>
+        A futuristic interface for breaking down reality and rebuilding it better.
       </p>
 
       <div class="flex items-center justify-center gap-4">
-        <button onclick="document.getElementById('workspace').scrollIntoView({behavior:'smooth'})" 
+        <button onclick="document.getElementById('workspace').scrollIntoView({behavior:'smooth'}); setTimeout(() => triggerCarnivalBurst(window.innerWidth*0.5, 320), 420)" 
                 class="group flex items-center gap-3 bg-white text-[#05050f] px-8 h-14 rounded-3xl text-[15px] font-semibold active:scale-[0.985]">
           Begin Exploration
           <i class="fa-solid fa-rocket group-active:translate-x-0.5 transition"></i>
         </button>
         
-        <button onclick="useRandomPrompt()" 
+        <button onclick="useRandomPrompt(); setTimeout(() => triggerCarnivalBurst(window.innerWidth*0.55, 280), 300)" 
                 class="flex items-center gap-3 px-7 h-14 rounded-3xl border border-white/20 hover:bg-white/5 text-sm font-medium">
           <i class="fa-solid fa-satellite"></i>
           <span>Surprise me</span>
@@ -289,7 +321,7 @@
   <div id="toolkit" class="max-w-screen-2xl mx-auto px-6 pb-12 relative z-10">
     <div class="flex items-end justify-between mb-8 px-1">
       <div>
-        <div class="text-[#67f6ff] text-sm tracking-[3px]">THE CORE SYSTEM</div>
+        <div class="text-[#ff2e63] text-sm tracking-[3px]">THE COSMIC MIDWAY</div>
         <div class="font-display text-5xl tracking-[-1.5px]">Six Modes of Truth</div>
       </div>
       <button onclick="document.getElementById('workspace').scrollIntoView({behavior:'smooth'})" 
@@ -370,8 +402,8 @@
             </div>
 
             <div class="flex items-center gap-3">
-              <button onclick="runGenerate()" 
-                      class="flex-1 h-14 bg-gradient-to-r from-[#67f6ff] to-[#c084fc] text-[#05050f] font-semibold rounded-2xl flex items-center justify-center gap-3 active:scale-[0.985] text-[15px] transition">
+              <button onclick="runGenerate(); triggerCarnivalBurst(window.innerWidth * 0.7, 380)" 
+                      class="flex-1 h-14 bg-gradient-to-r from-[#67f6ff] to-[#c084fc] text-[#05050f] font-semibold rounded-2xl flex items-center justify-center gap-3 active:scale-[0.985] text-[15px] transition carnival-glow">
                 <span id="generate-text">GENERATE WITH GROK</span>
                 <i class="fa-solid fa-meteor"></i>
               </button>
@@ -444,13 +476,13 @@
   <!-- Pricing -->
   <div id="pricing" class="max-w-screen-2xl mx-auto px-6 pb-20">
     <div class="text-center mb-8">
-      <div class="text-sm text-[#c084fc]">UNLOCK THE COSMOS</div>
-      <div class="font-display text-5xl">Choose Your Orbit</div>
+      <div class="text-sm text-[#ff2e63]">UNLOCK THE COSMOS</div>
+      <div class="font-display text-5xl">Choose Your Carnival Ride</div>
     </div>
     
     <div class="grid md:grid-cols-2 gap-5 max-w-3xl mx-auto">
       <!-- Free -->
-      <div class="holo-card p-8 rounded-3xl">
+      <div class="holo-card carnival-hover p-8 rounded-3xl">
         <div class="flex justify-between">
           <div class="font-semibold text-2xl">Explorer</div>
           <div><span class="text-4xl font-semibold">Free</span></div>
@@ -465,7 +497,7 @@
       </div>
       
       <!-- Pro -->
-      <div class="holo-card p-8 rounded-3xl border-[#c084fc]/40 relative">
+      <div class="holo-card carnival-hover p-8 rounded-3xl border-[#c084fc]/40 relative">
         <div class="absolute top-6 right-6 px-4 py-px text-xs rounded-full bg-[#c084fc] text-black font-medium">RECOMMENDED</div>
         <div class="flex justify-between">
           <div class="font-semibold text-2xl">Pro</div>
@@ -480,7 +512,7 @@
           <li class="flex gap-3"><i class="fa-solid fa-check text-[#c084fc] mt-1"></i> Priority support</li>
         </ul>
         
-        <button onclick="upgradeToPro()" 
+        <button onclick="upgradeToPro(); triggerCarnivalBurst(window.innerWidth * 0.65, 620)" 
                 class="w-full h-12 bg-gradient-to-r from-[#67f6ff] to-[#c084fc] text-[#05050f] font-semibold rounded-2xl flex items-center justify-center gap-2">
           <i class="fa-solid fa-rocket"></i> <span>Upgrade to Pro</span>
         </button>
@@ -510,46 +542,395 @@
       document.documentElement.style.setProperty('--accent', '#67f6ff');
     }
 
-    // Starfield Canvas
+    // ============================================
+    // SPACE CARNIVAL CANVAS — Spicy cosmic fair graphics
+    // ============================================
+    let carnivalCanvas, carnivalCtx;
+    let carnivalStars = [];
+    let carnivalPlanets = [];
+    let carnivalRockets = [];
+    let carnivalFireworks = [];
+    let carnivalSparkles = [];
+    let carnivalLights = [];
+    let lastFirework = 0;
+
+    const CARNIVAL_COLORS = ['#67f6ff', '#c084fc', '#ff2e63', '#ffd700', '#00ff9f', '#ff9500', '#ff6b6b'];
+
     function initStarfield() {
-      const canvas = document.getElementById('starfield');
-      const ctx = canvas.getContext('2d');
-      
+      carnivalCanvas = document.getElementById('starfield');
+      carnivalCtx = carnivalCanvas.getContext('2d', { alpha: true });
+
       function resize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        carnivalCanvas.width = window.innerWidth;
+        carnivalCanvas.height = window.innerHeight;
+        // reposition carnival marquee lights on resize
+        carnivalLights = [];
+        const lightCount = 22;
+        for (let i = 0; i < lightCount; i++) {
+          carnivalLights.push({
+            x: (carnivalCanvas.width * 0.08) + (i / lightCount) * (carnivalCanvas.width * 0.84),
+            y: 85 + Math.sin(i) * 6,
+            phase: i * 0.7,
+            color: CARNIVAL_COLORS[i % CARNIVAL_COLORS.length]
+          });
+        }
       }
       window.addEventListener('resize', resize);
       resize();
 
-      const stars = [];
-      for (let i = 0; i < 280; i++) {
-        stars.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          size: Math.random() * 1.8 + 0.3,
-          speed: Math.random() * 0.025 + 0.01,
-          alpha: Math.random() * 0.7 + 0.3
+      // Colorful twinkling stars (carnival lights in the sky)
+      carnivalStars = [];
+      for (let i = 0; i < 420; i++) {
+        carnivalStars.push({
+          x: Math.random() * carnivalCanvas.width,
+          y: Math.random() * carnivalCanvas.height,
+          size: Math.random() * 2.2 + 0.4,
+          speed: Math.random() * 0.035 + 0.008,
+          alpha: Math.random() * 0.6 + 0.4,
+          twinkle: Math.random() * Math.PI * 2,
+          color: CARNIVAL_COLORS[Math.floor(Math.random() * CARNIVAL_COLORS.length)]
         });
       }
 
-      function draw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // Drifting carnival planets / glowing orbs (ferris wheel style)
+      carnivalPlanets = [];
+      for (let i = 0; i < 5; i++) {
+        carnivalPlanets.push({
+          x: Math.random() * carnivalCanvas.width,
+          y: Math.random() * (carnivalCanvas.height * 0.7),
+          r: 14 + Math.random() * 18,
+          vx: (Math.random() - 0.5) * 0.12,
+          vy: (Math.random() - 0.5) * 0.06,
+          hue: CARNIVAL_COLORS[i % CARNIVAL_COLORS.length],
+          phase: Math.random() * Math.PI * 2,
+          ring: Math.random() > 0.4
+        });
+      }
+
+      // Flying rockets (carnival rides in space)
+      carnivalRockets = [];
+      for (let i = 0; i < 3; i++) {
+        spawnRocket(true);
+      }
+
+      // Mouse sparkle trail
+      window.addEventListener('mousemove', (e) => {
+        if (Math.random() > 0.6) {
+          carnivalSparkles.push({
+            x: e.clientX,
+            y: e.clientY,
+            vx: (Math.random() - 0.5) * 1.2,
+            vy: (Math.random() - 0.5) * 1.2 - 0.4,
+            life: 26 + Math.random() * 14,
+            size: 1.5 + Math.random() * 1.5,
+            color: CARNIVAL_COLORS[Math.floor(Math.random() * CARNIVAL_COLORS.length)]
+          });
+        }
+      });
+
+      function spawnRocket(initial = false) {
+        const goingRight = Math.random() > 0.5;
+        carnivalRockets.push({
+          x: goingRight ? -40 : carnivalCanvas.width + 40,
+          y: 120 + Math.random() * (carnivalCanvas.height * 0.55),
+          vx: goingRight ? 1.6 + Math.random() * 1.1 : -1.6 - Math.random() * 1.1,
+          vy: (Math.random() - 0.5) * 0.5,
+          size: 7 + Math.random() * 3,
+          life: initial ? 999 : 180 + Math.random() * 90,
+          color: CARNIVAL_COLORS[Math.floor(Math.random() * CARNIVAL_COLORS.length)],
+          trail: []
+        });
+      }
+
+      function launchFirework(x = null, y = null) {
+        const fx = x !== null ? x : Math.random() * carnivalCanvas.width;
+        const fy = y !== null ? y : carnivalCanvas.height * (0.35 + Math.random() * 0.45);
+        const count = 26 + Math.floor(Math.random() * 22);
+        for (let i = 0; i < count; i++) {
+          const angle = (i / count) * Math.PI * 2 + (Math.random() - 0.5) * 0.6;
+          const speed = 1.4 + Math.random() * 2.6;
+          carnivalFireworks.push({
+            x: fx,
+            y: fy,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed - 0.6,
+            life: 42 + Math.random() * 26,
+            size: 1.8 + Math.random() * 1.6,
+            color: CARNIVAL_COLORS[Math.floor(Math.random() * CARNIVAL_COLORS.length)],
+            gravity: 0.035
+          });
+        }
+      }
+
+      // Global burst trigger for UI actions (mode select, generate, etc)
+      window.triggerCarnivalBurst = function(bx, by) {
+        // Big colorful explosion + extra sparkles
+        const count = 38;
+        for (let i = 0; i < count; i++) {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = 1.8 + Math.random() * 3.2;
+          carnivalFireworks.push({
+            x: bx,
+            y: by,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed - 1.1,
+            life: 48 + Math.random() * 30,
+            size: 2 + Math.random() * 1.8,
+            color: CARNIVAL_COLORS[Math.floor(Math.random() * CARNIVAL_COLORS.length)],
+            gravity: 0.028
+          });
+        }
+        // Bonus sparkles
+        for (let i = 0; i < 18; i++) {
+          carnivalSparkles.push({
+            x: bx + (Math.random() - 0.5) * 70,
+            y: by + (Math.random() - 0.5) * 50,
+            vx: (Math.random() - 0.5) * 2.5,
+            vy: (Math.random() - 0.5) * 2.5 - 1,
+            life: 32 + Math.random() * 20,
+            size: 1.6 + Math.random(),
+            color: CARNIVAL_COLORS[Math.floor(Math.random() * CARNIVAL_COLORS.length)]
+          });
+        }
+        // Chance of a second mini firework
+        if (Math.random() > 0.5) setTimeout(() => launchFirework(bx + (Math.random()-0.5)*120, by - 30), 90);
+      };
+
+      function drawRocket(r, ctx) {
+        ctx.save();
+        ctx.translate(r.x, r.y);
+        const dir = r.vx > 0 ? 1 : -1;
+        ctx.scale(dir, 1);
+
+        // Body
+        ctx.fillStyle = r.color;
+        ctx.beginPath();
+        ctx.moveTo(0, -r.size * 0.4);
+        ctx.lineTo(r.size * 1.6, 0);
+        ctx.lineTo(0, r.size * 0.4);
+        ctx.closePath();
+        ctx.fill();
+
+        // Nose cone
         ctx.fillStyle = '#fff';
-        
-        stars.forEach(star => {
-          ctx.globalAlpha = star.alpha;
-          ctx.fillRect(star.x, star.y, star.size, star.size);
-          
-          star.y += star.speed;
-          if (star.y > canvas.height) {
-            star.y = 0;
-            star.x = Math.random() * canvas.width;
-          }
+        ctx.beginPath();
+        ctx.moveTo(r.size * 1.6, 0);
+        ctx.lineTo(r.size * 2.1, -r.size * 0.18);
+        ctx.lineTo(r.size * 2.1, r.size * 0.18);
+        ctx.closePath();
+        ctx.fill();
+
+        // Flame / exhaust (carnival fire)
+        ctx.fillStyle = Math.random() > 0.5 ? '#ffd700' : '#ff2e63';
+        ctx.beginPath();
+        ctx.moveTo(-2, -r.size * 0.15);
+        ctx.lineTo(-r.size * 1.3 - Math.random() * 4, 0);
+        ctx.lineTo(-2, r.size * 0.15);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.restore();
+
+        // Trail particles
+        r.trail.push({ x: r.x - r.vx * 1.5, y: r.y + (Math.random()-0.5)*2, life: 11 });
+        r.trail = r.trail.slice(-7);
+        ctx.fillStyle = '#ffd700';
+        r.trail.forEach((t, idx) => {
+          ctx.globalAlpha = (t.life / 12) * 0.7;
+          ctx.fillRect(t.x, t.y, 1.5, 1.5);
+          t.life -= 1;
         });
         ctx.globalAlpha = 1;
+      }
+
+      function draw() {
+        const ctx = carnivalCtx;
+        const w = carnivalCanvas.width;
+        const h = carnivalCanvas.height;
+
+        ctx.clearRect(0, 0, w, h);
+
+        // Subtle colorful nebula wash (carnival atmosphere)
+        ctx.fillStyle = 'rgba(99, 102, 241, 0.035)';
+        ctx.fillRect(0, 0, w, h * 0.55);
+        ctx.fillStyle = 'rgba(255, 46, 99, 0.025)';
+        ctx.fillRect(0, h * 0.3, w, h * 0.7);
+
+        // === FAIRGROUND STRING LIGHTS (top marquee) ===
+        ctx.save();
+        carnivalLights.forEach((l, i) => {
+          const on = Math.sin(Date.now() / 280 + l.phase) > 0.1;
+          ctx.fillStyle = on ? l.color : '#222';
+          ctx.beginPath();
+          ctx.arc(l.x, l.y, on ? 2.8 : 1.6, 0, Math.PI * 2);
+          ctx.fill();
+          // Glow when on
+          if (on) {
+            ctx.fillStyle = l.color;
+            ctx.globalAlpha = 0.25;
+            ctx.beginPath();
+            ctx.arc(l.x, l.y, 7, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.globalAlpha = 1;
+          }
+        });
+        ctx.restore();
+
+        // === PLANETS (carnival orbs + rings) ===
+        carnivalPlanets.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy + Math.sin(p.phase) * 0.12;
+          p.phase += 0.008;
+
+          // Wrap around
+          if (p.x < -40) p.x = w + 40;
+          if (p.x > w + 40) p.x = -40;
+          if (p.y < 40) p.y = h * 0.65;
+          if (p.y > h * 0.72) p.y = 60;
+
+          // Glow
+          ctx.fillStyle = p.hue;
+          ctx.globalAlpha = 0.15;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r * 1.7, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.globalAlpha = 1;
+
+          // Planet body
+          ctx.fillStyle = p.hue;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Carnival stripes
+          ctx.strokeStyle = '#fff';
+          ctx.lineWidth = 1.5;
+          for (let s = -1; s <= 1; s++) {
+            ctx.beginPath();
+            ctx.ellipse(p.x, p.y + s * p.r * 0.35, p.r * 0.92, p.r * 0.22, 0, 0, Math.PI * 2);
+            ctx.stroke();
+          }
+
+          // Ring (ferris wheel vibe)
+          if (p.ring) {
+            ctx.strokeStyle = '#fff';
+            ctx.globalAlpha = 0.65;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.ellipse(p.x, p.y + 2, p.r * 1.85, p.r * 0.45, -0.6, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.globalAlpha = 1;
+          }
+        });
+
+        // === STARS (twinkling multicolored carnival sky) ===
+        ctx.fillStyle = '#fff';
+        carnivalStars.forEach(star => {
+          star.twinkle += 0.09;
+          const tw = 0.55 + Math.sin(star.twinkle) * 0.45;
+          ctx.globalAlpha = star.alpha * tw;
+
+          // colored star
+          ctx.fillStyle = star.color;
+          ctx.fillRect(star.x, star.y, star.size, star.size);
+
+          // extra sparkle cross for bigger ones
+          if (star.size > 1.6) {
+            ctx.fillRect(star.x - 1, star.y + star.size * 0.3, 1, star.size * 0.5);
+            ctx.fillRect(star.x + star.size * 0.3, star.y - 1, star.size * 0.5, 1);
+          }
+
+          // gentle drift (like parade floats)
+          star.y += star.speed;
+          if (star.y > h) {
+            star.y = 0;
+            star.x = Math.random() * w;
+          }
+          // occasional horizontal drift
+          star.x += Math.sin(star.twinkle * 0.6) * 0.15;
+        });
+        ctx.globalAlpha = 1;
+
+        // === ROCKETS ===
+        carnivalRockets.forEach((r, idx) => {
+          r.x += r.vx;
+          r.y += r.vy;
+          r.life -= 1;
+          r.vy += 0.002; // gentle arc
+
+          drawRocket(r, ctx);
+
+          // Respawn when offscreen or dead
+          if (r.life <= 0 || r.x < -60 || r.x > w + 60) {
+            carnivalRockets.splice(idx, 1);
+            spawnRocket();
+          }
+        });
+
+        // === FIREWORKS (carnival explosions!) ===
+        ctx.save();
+        carnivalFireworks.forEach((f, idx) => {
+          f.x += f.vx;
+          f.y += f.vy;
+          f.vy += f.gravity;
+          f.life -= 1;
+          f.vx *= 0.985;
+          f.vy *= 0.985;
+
+          const alpha = Math.max(0.1, f.life / 55);
+          ctx.globalAlpha = alpha;
+          ctx.fillStyle = f.color;
+          ctx.beginPath();
+          ctx.arc(f.x, f.y, f.size, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Tiny sparkle halo
+          if (Math.random() > 0.6) {
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(f.x + 1, f.y - 1, 1, 1);
+          }
+
+          if (f.life <= 0) carnivalFireworks.splice(idx, 1);
+        });
+        ctx.globalAlpha = 1;
+        ctx.restore();
+
+        // === SPARKLES (mouse + burst particles) ===
+        carnivalSparkles.forEach((s, idx) => {
+          s.x += s.vx;
+          s.y += s.vy;
+          s.vy += 0.03;
+          s.life -= 1;
+          s.vx *= 0.96;
+
+          const a = Math.max(0.05, s.life / 40);
+          ctx.globalAlpha = a;
+          ctx.fillStyle = s.color;
+          ctx.fillRect(s.x, s.y, s.size, s.size);
+
+          if (s.life <= 0) carnivalSparkles.splice(idx, 1);
+        });
+        ctx.globalAlpha = 1;
+
+        // Random carnival fireworks every ~2.4s
+        const now = Date.now();
+        if (now - lastFirework > 2400 + Math.random() * 1100) {
+          launchFirework();
+          lastFirework = now;
+          // Sometimes launch a second one nearby
+          if (Math.random() > 0.65) {
+            setTimeout(() => launchFirework(), 420);
+          }
+        }
+
+        // Occasionally send a new rocket
+        if (Math.random() < 0.008 && carnivalRockets.length < 5) {
+          spawnRocket();
+        }
+
         requestAnimationFrame(draw);
       }
+
       draw();
     }
 
@@ -572,7 +953,7 @@
       
       CORE_MODES.forEach(mode => {
         const el = document.createElement('div');
-        el.className = `holo-card mode-card rounded-3xl p-6 cursor-pointer group`;
+        el.className = `holo-card mode-card carnival-hover rounded-3xl p-6 cursor-pointer group`;
         el.innerHTML = `
           <div class="flex gap-4">
             <div class="w-12 h-12 flex-shrink-0 rounded-2xl bg-white/5 flex items-center justify-center text-3xl text-[#67f6ff]">
@@ -605,6 +986,13 @@
       
       // Scroll to workspace
       document.getElementById('workspace').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      
+      // SPACE CARNIVAL: celebrate mode selection with fireworks!
+      setTimeout(() => {
+        const ws = document.getElementById('workspace');
+        const rect = ws.getBoundingClientRect();
+        triggerCarnivalBurst(rect.left + 180, rect.top + 90);
+      }, 380);
       
       // Focus input
       setTimeout(() => {
@@ -712,6 +1100,13 @@
         
         outputEl.innerHTML = data.output.replace(/\n/g, '<br>');
         document.getElementById('output-meta').innerHTML = `${data.model} • ${Math.round((data.duration_ms || 0)/1000)}s`;
+        
+        // SPACE CARNIVAL CELEBRATION on successful insight!
+        setTimeout(() => {
+          const outRect = outputEl.getBoundingClientRect();
+          triggerCarnivalBurst(outRect.left + outRect.width * 0.3, outRect.top + 60);
+          triggerCarnivalBurst(outRect.left + outRect.width * 0.7, outRect.top + 110);
+        }, 220);
         
       } catch (err) {
         outputEl.innerHTML = `<div class="text-red-400">Error: ${err.message}</div>`;
@@ -845,6 +1240,12 @@
     }
 
     window.onload = init;
+
+    // Safe global carnival burst (in case called super early)
+    window.triggerCarnivalBurst = window.triggerCarnivalBurst || function(x, y) {
+      // Will be replaced by the real one once canvas initializes
+      console.log('%c[Space Carnival] Burst queued — canvas not ready yet', 'color:#ffd700');
+    };
   </script>
 </body>
 </html>
