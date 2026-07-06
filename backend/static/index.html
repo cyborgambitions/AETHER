@@ -357,17 +357,17 @@
             
             <div class="space-y-4">
               <div>
-                <div class="flex justify-between text-xs mb-1.5 px-0.5">
+                <label for="temperature" class="flex justify-between text-xs mb-1.5 px-0.5 cursor-pointer">
                   <span>Creativity</span>
                   <span id="temp-value" class="font-mono text-[#67f6ff]">0.7</span>
-                </div>
+                </label>
                 <input type="range" id="temperature" min="0" max="1.2" step="0.05" value="0.7" 
                        class="w-full accent-[#67f6ff]" oninput="updateTempValue(this.value)">
               </div>
               
               <div class="flex items-center justify-between text-sm">
                 <div>
-                  <label class="flex items-center gap-2 cursor-pointer">
+                  <label for="use-hosted" class="flex items-center gap-2 cursor-pointer">
                     <input type="checkbox" id="use-hosted" class="accent-[#67f6ff]" onchange="updateHostedStatus()">
                     <span class="text-sm">Use Hosted (Pro)</span>
                   </label>
@@ -392,10 +392,10 @@
 
           <div class="space-y-4">
             <div>
-              <div class="flex items-center justify-between mb-2 text-xs uppercase tracking-widest text-white/50">
+              <label for="input-text" class="flex items-center justify-between mb-2 text-xs uppercase tracking-widest text-white/50 cursor-pointer">
                 <div>INPUT</div>
                 <div id="placeholder-hint" class="normal-case font-normal text-white/30"></div>
-              </div>
+              </label>
               <textarea id="input-text" rows="5" 
                         class="w-full bg-[#05050f] border border-white/10 focus:border-[#67f6ff]/70 rounded-2xl p-5 text-base placeholder:text-white/30 resize-y min-h-[120px]"
                         placeholder="Enter your topic, claim, question, or fields to connect..."></textarea>
@@ -526,6 +526,7 @@
       <div class="font-display text-3xl mb-1">Connect to Grok</div>
       <div class="text-white/60 mb-6 text-sm">Paste your xAI API key to unlock unlimited first-principles power.</div>
       
+      <label for="key-input" class="block text-sm mb-1.5 text-white/70">xAI API Key</label>
       <input id="key-input" type="password" class="w-full bg-black/70 font-mono px-5 py-4 rounded-2xl border border-white/10 focus:border-[#67f6ff]" placeholder="xai-..." />
       
       <div class="mt-4 flex gap-3">
@@ -852,7 +853,8 @@
         ctx.globalAlpha = 1;
 
         // === ROCKETS ===
-        carnivalRockets.forEach((r, idx) => {
+        for (let i = carnivalRockets.length - 1; i >= 0; i--) {
+          const r = carnivalRockets[i];
           r.x += r.vx;
           r.y += r.vy;
           r.life -= 1;
@@ -862,14 +864,15 @@
 
           // Respawn when offscreen or dead
           if (r.life <= 0 || r.x < -60 || r.x > w + 60) {
-            carnivalRockets.splice(idx, 1);
+            carnivalRockets.splice(i, 1);
             spawnRocket();
           }
-        });
+        }
 
         // === FIREWORKS (carnival explosions!) ===
         ctx.save();
-        carnivalFireworks.forEach((f, idx) => {
+        for (let i = carnivalFireworks.length - 1; i >= 0; i--) {
+          const f = carnivalFireworks[i];
           f.x += f.vx;
           f.y += f.vy;
           f.vy += f.gravity;
@@ -890,13 +893,14 @@
             ctx.fillRect(f.x + 1, f.y - 1, 1, 1);
           }
 
-          if (f.life <= 0) carnivalFireworks.splice(idx, 1);
-        });
+          if (f.life <= 0) carnivalFireworks.splice(i, 1);
+        }
         ctx.globalAlpha = 1;
         ctx.restore();
 
         // === SPARKLES (mouse + burst particles) ===
-        carnivalSparkles.forEach((s, idx) => {
+        for (let i = carnivalSparkles.length - 1; i >= 0; i--) {
+          const s = carnivalSparkles[i];
           s.x += s.vx;
           s.y += s.vy;
           s.vy += 0.03;
@@ -908,8 +912,8 @@
           ctx.fillStyle = s.color;
           ctx.fillRect(s.x, s.y, s.size, s.size);
 
-          if (s.life <= 0) carnivalSparkles.splice(idx, 1);
-        });
+          if (s.life <= 0) carnivalSparkles.splice(i, 1);
+        }
         ctx.globalAlpha = 1;
 
         // Random carnival fireworks every ~2.4s
@@ -1116,7 +1120,6 @@
     function copyOutput() {
       if (!currentResult) return;
       navigator.clipboard.writeText(currentResult.output);
-      const orig = event.currentTarget;
     }
 
     function chainOutput() {
