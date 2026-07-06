@@ -10,22 +10,29 @@ services:
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
+      # === REQUIRED FOR AETHER TO WORK ===
       - key: XAI_API_KEY
-        sync: false   # Set this in Render dashboard (for hosted pro mode)
+        sync: false                    # IMPORTANT: Paste your xai-... key in the Render dashboard
+      - key: DATABASE_PATH
+        value: /var/data/aether.db     # Uses the persistent disk
+
+      # === NEEDED FOR STRIPE (set after first deploy) ===
+      - key: FRONTEND_URL
+        sync: false                    # Set to your full https://...onrender.com URL
+
+      # === OPTIONAL - Monetization ===
       - key: STRIPE_SECRET_KEY
         sync: false
       - key: STRIPE_PUBLISHABLE_KEY
         sync: false
       - key: STRIPE_PRO_PRICE_ID
         sync: false
+
+      # === Defaults (can leave as-is) ===
       - key: DEFAULT_MODEL
         value: grok-3
       - key: CORS_ORIGINS
         value: "*"
-      - key: DATABASE_PATH
-        value: /var/data/aether.db
-      - key: FRONTEND_URL
-        sync: false   # Set to your deployed https://...onrender.com after first deploy for Stripe redirects
     # Persistent disk for SQLite (Render provisions on create if declared)
     disk:
       name: aether-data
