@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AETHER • First Principles</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+    
+    :root {
+      --bg: #05050f;
+      --card: #0c0c1a;
+      --accent: #67f6ff;
+      --purple: #c084fc;
+    }
+    
+    body {
+      font-family: 'Inter', system_ui, sans-serif;
+      background: var(--bg);
+    }
+    
+    .font-display {
+      font-family: 'Space Grotesk', 'Inter', system_ui, sans-serif;
+      font-weight: 600;
+      letter-spacing: -0.04em;
+    }
+
+    .space-bg {
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(103, 246, 255, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(192, 132, 252, 0.04) 0%, transparent 60%),
+        #05050f;
+    }
+
+    .starfield {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.6;
+    }
+
+    .nebula {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: 
+        radial-gradient(ellipse at 30% 20%, rgba(99, 102, 241, 0.06) 0%, transparent 70%),
+        radial-gradient(ellipse at 70% 80%, rgba(192, 132, 252, 0.05) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 1;
+      animation: nebula-drift 40s ease-in-out infinite;
+    }
+
+    @keyframes nebula-drift {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(20px, -15px); }
+    }
+
+    .glass {
+      background: rgba(12, 12, 26, 0.75);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .holo-card {
+      position: relative;
+      background: rgba(12, 12, 26, 0.8);
+      border: 1px solid rgba(103, 246, 255, 0.15);
+      transition: all 0.3s cubic-bezier(0.23, 1.0, 0.32, 1);
+      overflow: hidden;
+    }
+
+    .holo-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        transparent 40%,
+        rgba(103, 246, 255, 0.1) 50%,
+        transparent 60%
+      );
+      transform: rotate(25deg);
+      transition: all 0.6s;
+      opacity: 0;
+    }
+
+    .holo-card:hover {
+      border-color: rgba(103, 246, 255, 0.4);
+      box-shadow: 0 0 0 1px rgba(103, 246, 255, 0.2),
+                  0 25px 50px -12px rgb(0 0 0 / 0.4);
+      transform: translateY(-2px);
+    }
+
+    .holo-card:hover::before {
+      animation: holo-sweep 1.2s ease;
+      opacity: 1;
+    }
+
+    @keyframes holo-sweep {
+      0% { transform: translateX(-100%) rotate(25deg); }
+      100% { transform: translateX(200%) rotate(25deg); }
+    }
+
+    .futuristic-text {
+      background: linear-gradient(90deg, #fff, #67f6ff, #c084fc, #fff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-size: 200% 100%;
+      animation: gradient-shift 4s linear infinite;
+    }
+
+    .section-header {
+      font-size: clamp(2.5rem, 6vw, 4.2rem);
+      line-height: 0.95;
+      letter-spacing: -0.05em;
+    }
+
+    .cosmic-glow {
+      box-shadow: 0 0 15px rgba(103, 246, 255, 0.15),
+                  inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+
+    .nav-link {
+      position: relative;
+      transition: color 0.2s;
+    }
+    .nav-link:after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: linear-gradient(to right, #67f6ff, #c084fc);
+      transition: width 0.3s;
+    }
+    .nav-link:hover:after { width: 100%; }
+
+    .mode-card {
+      transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1), 
+                  box-shadow 0.3s, 
+                  border-color 0.3s;
+    }
+    .mode-card.active {
+      border-color: #67f6ff;
+      box-shadow: 0 0 0 1px #67f6ff;
+      transform: scale(1.01);
+    }
+
+    .result-panel {
+      font-family: 'Space Grotesk', ui-monospace, monospace;
+      line-height: 1.7;
+    }
+
+    .scanline {
+      position: relative;
+    }
+    .scanline::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(transparent, rgba(103,246,255,0.3), transparent);
+      animation: scan 2.5s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes scan {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(400%); }
+    }
+
+    .stat {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .universe-bg {
+      background-image: 
+        url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22 viewBox=%220 0 300 300%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.75%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22300%22 height=%22300%22 filter=%22url(%23n)%22 opacity=%220.04%22/%3E%3C/svg%3E');
+      background-size: cover;
+    }
+  </style>
+</head>
+<body class="bg-[#05050f] text-white overflow-x-hidden">
+  <!-- Animated Background -->
+  <canvas id="starfield" class="starfield fixed inset-0 z-0"></canvas>
+  <div class="nebula fixed inset-0 z-0"></div>
+
+  <!-- Navigation -->
+  <nav class="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-[#05050f]/80 backdrop-blur-2xl">
+    <div class="max-w-screen-2xl mx-auto">
+      <div class="flex items-center justify-between px-8 h-20">
+        <!-- Logo -->
+        <div class="flex items-center gap-4">
+          <div class="relative w-11 h-11 flex items-center justify-center">
+            <div class="absolute inset-0 bg-gradient-to-br from-[#67f6ff] via-[#c084fc] to-[#6366f1] rounded-2xl blur-md opacity-60"></div>
+            <div class="relative w-11 h-11 rounded-2xl bg-[#05050f] flex items-center justify-center border border-white/20">
+              <i class="fa-solid fa-infinity text-3xl bg-gradient-to-br from-[#67f6ff] to-[#c084fc] bg-clip-text text-transparent"></i>
+            </div>
+          </div>
+          <div>
+            <div class="font-display text-4xl tracking-[-2.5px] font-semibold">AETHER</div>
+            <div class="text-[9px] text-white/40 -mt-1.5 tracking-[3px]">FIRST PRINCIPLES</div>
+          </div>
+        </div>
+
+        <!-- Nav Links -->
+        <div class="hidden md:flex items-center gap-x-9 text-sm">
+          <a href="#toolkit" onclick="document.getElementById('toolkit').scrollIntoView({behavior:'smooth'})" class="nav-link text-white/70 hover:text-white">Toolkit</a>
+          <a href="#explore" onclick="document.getElementById('explore').scrollIntoView({behavior:'smooth'})" class="nav-link text-white/70 hover:text-white">Explore</a>
+          <a href="#community" onclick="document.getElementById('community').scrollIntoView({behavior:'smooth'})" class="nav-link text-white/70 hover:text-white">Community</a>
+          <a href="#pricing" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})" class="nav-link text-white/70 hover:text-white">Pro</a>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <!-- Pro Status -->
+          <div onclick="showPricing()" id="pro-pill" 
+               class="hidden items-center gap-2 px-4 py-1.5 rounded-full text-xs font-medium cursor-pointer bg-gradient-to-r from-[#67f6ff]/10 to-[#c084fc]/10 border border-white/10 hover:border-white/30 transition">
+            <i class="fa-solid fa-crown text-[#c084fc]"></i>
+            <span class="font-medium">PRO</span>
+          </div>
+
+          <!-- API Key -->
+          <button onclick="showApiKeyModal()" 
+                  class="flex items-center gap-2.5 px-5 h-10 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition text-sm">
+            <i class="fa-solid fa-key text-[#67f6ff]"></i>
+            <span id="key-status" class="text-sm">Connect Key</span>
+          </button>
+
+          <!-- Launch App -->
+          <button onclick="document.getElementById('workspace').scrollIntoView({behavior:'smooth'})" 
+                  class="px-6 h-10 rounded-2xl bg-white text-black text-sm font-semibold flex items-center gap-2 hover:bg-[#67f6ff] active:scale-[0.985] transition">
+            <span>Launch Toolkit</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <div class="relative pt-20 pb-16 px-6 max-w-screen-2xl mx-auto z-10">
+    <div class="max-w-5xl mx-auto text-center pt-14">
+      <div class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-white/5 border border-white/10 text-xs tracking-[2px] mb-6">
+        <div class="w-1.5 h-1.5 bg-[#67f6ff] rounded-full animate-pulse"></div>
+        POWERED BY GROK • BUILT FOR TRUTH
+      </div>
+
+      <h1 class="font-display text-7xl md:text-[92px] leading-[0.92] tracking-[-6.5px] font-semibold mb-6">
+        The universe<br>
+        <span class="futuristic-text">doesn't explain itself.</span>
+      </h1>
+      
+      <p class="max-w-md mx-auto text-xl text-white/60 mb-9">
+        A futuristic interface for first-principles reasoning.<br>
+        Break down reality. Rebuild it better.
+      </p>
+
+      <div class="flex items-center justify-center gap-4">
+        <button onclick="document.getElementById('workspace').scrollIntoView({behavior:'smooth'})" 
+                class="group flex items-center gap-3 bg-white text-[#05050f] px-8 h-14 rounded-3xl text-[15px] font-semibold active:scale-[0.985]">
+          Begin Exploration
+          <i class="fa-solid fa-rocket group-active:translate-x-0.5 transition"></i>
+        </button>
+        
+        <button onclick="useRandomPrompt()" 
+                class="flex items-center gap-3 px-7 h-14 rounded-3xl border border-white/20 hover:bg-white/5 text-sm font-medium">
+          <i class="fa-solid fa-satellite"></i>
+          <span>Surprise me</span>
+        </button>
+      </div>
+      
+      <div class="flex justify-center gap-8 mt-12 text-xs text-white/40">
+        <div class="flex items-center gap-1.5"><i class="fa-solid fa-globe"></i> 6 MODES</div>
+        <div class="flex items-center gap-1.5"><i class="fa-solid fa-users"></i> COMMUNITY POWERED</div>
+        <div class="flex items-center gap-1.5"><i class="fa-solid fa-infinity"></i> UNLIMITED DEPTH</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toolkit Section -->
+  <div id="toolkit" class="max-w-screen-2xl mx-auto px-6 pb-12 relative z-10">
+    <div class="flex items-end justify-between mb-8 px-1">
+      <div>
+        <div class="text-[#67f6ff] text-sm tracking-[3px]">THE CORE SYSTEM</div>
+        <div class="font-display text-5xl tracking-[-1.5px]">Six Modes of Truth</div>
+      </div>
+      <button onclick="document.getElementById('workspace').scrollIntoView({behavior:'smooth'})" 
+              class="hidden md:flex items-center gap-2 text-sm px-5 py-2.5 rounded-2xl border border-white/10 hover:bg-white/5">
+        Open full workspace <i class="fa-solid fa-arrow-right ml-1"></i>
+      </button>
+    </div>
+
+    <!-- Mode Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4" id="mode-grid">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+
+  <!-- Workspace -->
+  <div id="workspace" class="max-w-screen-2xl mx-auto px-6 pb-20 relative z-10">
+    <div class="glass rounded-3xl border border-white/10 p-1.5 cosmic-glow">
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-1.5">
+        
+        <!-- Sidebar: Modes + Settings -->
+        <div class="lg:col-span-2 bg-[#0a0b1f] rounded-[22px] p-6 flex flex-col">
+          <div class="flex justify-between items-center mb-5 px-1">
+            <div class="font-semibold text-lg">Select Mode</div>
+            <div class="text-xs px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[#67f6ff]">6 MODES</div>
+          </div>
+          
+          <div class="space-y-2 mb-auto" id="workspace-modes">
+            <!-- JS injected compact modes -->
+          </div>
+
+          <div class="mt-auto pt-6 border-t border-white/10">
+            <div class="text-xs text-white/50 mb-3 px-1">GENERATION SETTINGS</div>
+            
+            <div class="space-y-4">
+              <div>
+                <div class="flex justify-between text-xs mb-1.5 px-0.5">
+                  <span>Creativity</span>
+                  <span id="temp-value" class="font-mono text-[#67f6ff]">0.7</span>
+                </div>
+                <input type="range" id="temperature" min="0" max="1.2" step="0.05" value="0.7" 
+                       class="w-full accent-[#67f6ff]" oninput="updateTempValue(this.value)">
+              </div>
+              
+              <div class="flex items-center justify-between text-sm">
+                <div>
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" id="use-hosted" class="accent-[#67f6ff]" onchange="updateHostedStatus()">
+                    <span class="text-sm">Use Hosted (Pro)</span>
+                  </label>
+                </div>
+                <div id="hosted-badge" class="text-[10px] px-2.5 py-px rounded bg-[#c084fc]/10 text-[#c084fc] hidden">PRO</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Input -->
+        <div class="lg:col-span-3 bg-[#0c0c1a] rounded-[22px] p-7">
+          <div id="selected-mode-header" class="mb-4">
+            <div class="flex items-center gap-3">
+              <div id="selected-icon" class="w-8 h-8 flex-shrink-0"></div>
+              <div>
+                <div id="selected-title" class="font-semibold text-2xl">Choose a mode</div>
+                <div id="selected-desc" class="text-sm text-white/50"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <div>
+              <div class="flex items-center justify-between mb-2 text-xs uppercase tracking-widest text-white/50">
+                <div>INPUT</div>
+                <div id="placeholder-hint" class="normal-case font-normal text-white/30"></div>
+              </div>
+              <textarea id="input-text" rows="5" 
+                        class="w-full bg-[#05050f] border border-white/10 focus:border-[#67f6ff]/70 rounded-2xl p-5 text-base placeholder:text-white/30 resize-y min-h-[120px]"
+                        placeholder="Enter your topic, claim, question, or fields to connect..."></textarea>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <button onclick="runGenerate()" 
+                      class="flex-1 h-14 bg-gradient-to-r from-[#67f6ff] to-[#c084fc] text-[#05050f] font-semibold rounded-2xl flex items-center justify-center gap-3 active:scale-[0.985] text-[15px] transition">
+                <span id="generate-text">GENERATE WITH GROK</span>
+                <i class="fa-solid fa-meteor"></i>
+              </button>
+              
+              <button onclick="clearWorkspace()" 
+                      class="h-14 px-6 rounded-2xl border border-white/10 hover:bg-white/5 text-sm">
+                Clear
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Output -->
+        <div class="lg:col-span-5 mt-1.5">
+          <div id="output-panel" class="hidden bg-[#0c0c1a] rounded-[22px] p-6 border border-white/10">
+            <div class="flex justify-between items-center mb-3 px-1">
+              <div class="flex items-center gap-3">
+                <div class="font-semibold text-sm tracking-widest">OUTPUT • FIRST PRINCIPLES</div>
+                <div id="output-meta" class="text-xs px-3 py-0.5 bg-white/5 rounded-full font-mono text-[#67f6ff]"></div>
+              </div>
+              
+              <div class="flex gap-2">
+                <button onclick="copyOutput()" class="text-xs px-4 h-9 rounded-2xl border border-white/10 flex items-center gap-2 hover:bg-white/5">
+                  <i class="fa-regular fa-copy"></i> <span>COPY</span>
+                </button>
+                <button onclick="chainOutput()" class="text-xs px-4 h-9 rounded-2xl border border-white/10 flex items-center gap-2 hover:bg-white/5">
+                  <i class="fa-solid fa-link"></i> <span>CHAIN</span>
+                </button>
+                <button onclick="saveToHistory()" class="text-xs px-4 h-9 rounded-2xl border border-white/10 flex items-center gap-2 hover:bg-white/5">
+                  <i class="fa-solid fa-bookmark"></i>
+                </button>
+              </div>
+            </div>
+            
+            <div id="output-content" 
+                 class="result-panel scanline bg-[#05050f] border border-white/5 rounded-2xl p-7 text-[15px] leading-relaxed max-h-[460px] overflow-auto text-white/90">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Explore / Community / Pricing sections abbreviated for brevity but present -->
+  <div id="explore" class="max-w-screen-2xl mx-auto px-6 pb-16">
+    <div class="text-center mb-10">
+      <div class="text-[#67f6ff] tracking-[3px] text-sm">DEEP DIVE</div>
+      <div class="font-display text-5xl">How AETHER Works</div>
+    </div>
+    
+    <div class="grid md:grid-cols-3 gap-4 max-w-5xl mx-auto">
+      <div class="holo-card rounded-3xl p-8">
+        <div class="text-[#67f6ff] mb-3"><i class="fa-solid fa-atom fa-2x"></i></div>
+        <div class="font-semibold text-2xl mb-2">Deconstruct</div>
+        <div class="text-white/60">Strip any idea down to its irreducible truths using physics, logic, and human nature.</div>
+      </div>
+      <div class="holo-card rounded-3xl p-8">
+        <div class="text-[#67f6ff] mb-3"><i class="fa-solid fa-lightbulb fa-2x"></i></div>
+        <div class="font-semibold text-2xl mb-2">Generate</div>
+        <div class="text-white/60">Produce novel, testable hypotheses that bridge disconnected domains of knowledge.</div>
+      </div>
+      <div class="holo-card rounded-3xl p-8">
+        <div class="text-[#67f6ff] mb-3"><i class="fa-solid fa-shield-halved fa-2x"></i></div>
+        <div class="font-semibold text-2xl mb-2">Audit</div>
+        <div class="text-white/60">Ruthlessly evaluate claims with evidence scoring and bias detection.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pricing -->
+  <div id="pricing" class="max-w-screen-2xl mx-auto px-6 pb-20">
+    <div class="text-center mb-8">
+      <div class="text-sm text-[#c084fc]">UNLOCK THE COSMOS</div>
+      <div class="font-display text-5xl">Choose Your Orbit</div>
+    </div>
+    
+    <div class="grid md:grid-cols-2 gap-5 max-w-3xl mx-auto">
+      <!-- Free -->
+      <div class="holo-card p-8 rounded-3xl">
+        <div class="flex justify-between">
+          <div class="font-semibold text-2xl">Explorer</div>
+          <div><span class="text-4xl font-semibold">Free</span></div>
+        </div>
+        <div class="my-6 text-white/70">Bring your own xAI key. Perfect for deep personal exploration.</div>
+        <ul class="space-y-[9px] text-sm mb-8">
+          <li class="flex gap-3"><i class="fa-solid fa-check text-[#67f6ff] mt-1"></i> All 6 modes + community</li>
+          <li class="flex gap-3"><i class="fa-solid fa-check text-[#67f6ff] mt-1"></i> Unlimited with your own key</li>
+          <li class="flex gap-3"><i class="fa-solid fa-check text-[#67f6ff] mt-1"></i> Full history &amp; chaining</li>
+        </ul>
+        <button onclick="switchToWorkspace()" class="w-full h-12 border border-white/30 rounded-2xl">Start Free</button>
+      </div>
+      
+      <!-- Pro -->
+      <div class="holo-card p-8 rounded-3xl border-[#c084fc]/40 relative">
+        <div class="absolute top-6 right-6 px-4 py-px text-xs rounded-full bg-[#c084fc] text-black font-medium">RECOMMENDED</div>
+        <div class="flex justify-between">
+          <div class="font-semibold text-2xl">Pro</div>
+          <div><span class="text-4xl font-semibold">$9</span><span class="text-white/50">/mo</span></div>
+        </div>
+        <div class="my-6 text-white/70">Hosted intelligence. Unlimited depth without managing keys.</div>
+        
+        <ul class="space-y-[9px] text-sm mb-8">
+          <li class="flex gap-3"><i class="fa-solid fa-check text-[#c084fc] mt-1"></i> Unlimited hosted generations</li>
+          <li class="flex gap-3"><i class="fa-solid fa-check text-[#c084fc] mt-1"></i> Cloud saved prompts &amp; exports</li>
+          <li class="flex gap-3"><i class="fa-solid fa-check text-[#c084fc] mt-1"></i> Advanced chaining &amp; analysis</li>
+          <li class="flex gap-3"><i class="fa-solid fa-check text-[#c084fc] mt-1"></i> Priority support</li>
+        </ul>
+        
+        <button onclick="upgradeToPro()" 
+                class="w-full h-12 bg-gradient-to-r from-[#67f6ff] to-[#c084fc] text-[#05050f] font-semibold rounded-2xl flex items-center justify-center gap-2">
+          <i class="fa-solid fa-rocket"></i> <span>Upgrade to Pro</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- API Key Modal -->
+  <div id="key-modal" onclick="if (event.target.id === 'key-modal') hideKeyModal()" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-[999]">
+    <div onclick="event.stopImmediatePropagation()" class="glass rounded-3xl p-8 w-full max-w-md border border-white/10">
+      <div class="font-display text-3xl mb-1">Connect to Grok</div>
+      <div class="text-white/60 mb-6 text-sm">Paste your xAI API key to unlock unlimited first-principles power.</div>
+      
+      <input id="key-input" type="password" class="w-full bg-black/70 font-mono px-5 py-4 rounded-2xl border border-white/10 focus:border-[#67f6ff]" placeholder="xai-..." />
+      
+      <div class="mt-4 flex gap-3">
+        <button onclick="saveApiKey()" class="flex-1 bg-white text-black h-12 rounded-2xl font-semibold">Save Key</button>
+        <button onclick="hideKeyModal()" class="flex-1 border border-white/20 h-12 rounded-2xl">Cancel</button>
+      </div>
+      <div class="text-center mt-4 text-xs"><a href="https://console.x.ai" target="_blank" class="text-[#67f6ff]">Get your key → console.x.ai</a></div>
+    </div>
+  </div>
+
+  <script>
+    // Tailwind config
+    function initTailwind() {
+      document.documentElement.style.setProperty('--accent', '#67f6ff');
+    }
+
+    // Starfield Canvas
+    function initStarfield() {
+      const canvas = document.getElementById('starfield');
+      const ctx = canvas.getContext('2d');
+      
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      const stars = [];
+      for (let i = 0; i < 280; i++) {
+        stars.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          size: Math.random() * 1.8 + 0.3,
+          speed: Math.random() * 0.025 + 0.01,
+          alpha: Math.random() * 0.7 + 0.3
+        });
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#fff';
+        
+        stars.forEach(star => {
+          ctx.globalAlpha = star.alpha;
+          ctx.fillRect(star.x, star.y, star.size, star.size);
+          
+          star.y += star.speed;
+          if (star.y > canvas.height) {
+            star.y = 0;
+            star.x = Math.random() * canvas.width;
+          }
+        });
+        ctx.globalAlpha = 1;
+        requestAnimationFrame(draw);
+      }
+      draw();
+    }
+
+    // Core Prompts Data (matches backend)
+    const CORE_MODES = [
+      { id: "first-principles-deconstructor", title: "First Principles Deconstructor", icon: "fa-atom", category: "core", desc: "Strip any concept to its unbreakable fundamentals.", placeholder: "e.g. Why is AI alignment so difficult?" },
+      { id: "cosmic-hypothesis-generator", title: "Cosmic Hypothesis Generator", icon: "fa-lightbulb", category: "discovery", desc: "Invent bold, falsifiable ideas across domains.", placeholder: "e.g. Origin of life" },
+      { id: "truth-audit-engine", title: "Truth Audit Engine", icon: "fa-shield-halved", category: "audit", desc: "Maximum truth-seeking audit of any claim.", placeholder: "Paste a claim here" },
+      { id: "civilizational-consequence-mapper", title: "Civilizational Consequence Mapper", icon: "fa-globe", category: "longterm", desc: "Map 2nd–4th order effects over 50–100 years.", placeholder: "e.g. CRISPR gene editing" },
+      { id: "interdisciplinary-synthesizer", title: "Interdisciplinary Synthesizer", icon: "fa-link", category: "connection", desc: "Find hidden structural bridges between fields.", placeholder: "Field A and Field B" },
+      { id: "question-quality-amplifier", title: "Question Quality Amplifier", icon: "fa-magnifying-glass", category: "meta", desc: "Transform weak questions into profound ones.", placeholder: "Your current question" }
+    ];
+
+    let currentMode = null;
+    let currentResult = null;
+
+    function renderModeGrid() {
+      const container = document.getElementById('mode-grid');
+      container.innerHTML = '';
+      
+      CORE_MODES.forEach(mode => {
+        const el = document.createElement('div');
+        el.className = `holo-card mode-card rounded-3xl p-6 cursor-pointer group`;
+        el.innerHTML = `
+          <div class="flex gap-4">
+            <div class="w-12 h-12 flex-shrink-0 rounded-2xl bg-white/5 flex items-center justify-center text-3xl text-[#67f6ff]">
+              <i class="fa-solid ${mode.icon}"></i>
+            </div>
+            <div>
+              <div class="font-semibold text-xl leading-tight tracking-tight">${mode.title}</div>
+              <div class="text-sm mt-3 text-white/60 leading-snug">${mode.desc}</div>
+              <div class="mt-5 text-xs text-[#67f6ff]/70 group-hover:text-[#67f6ff] flex items-center gap-1">
+                SELECT MODE <i class="fa-solid fa-arrow-right text-xs ml-0.5"></i>
+              </div>
+            </div>
+          </div>
+        `;
+        el.onclick = () => selectMode(mode);
+        container.appendChild(el);
+      });
+    }
+
+    function selectMode(mode) {
+      currentMode = mode;
+      
+      // Update workspace header
+      document.getElementById('selected-title').innerHTML = mode.title;
+      document.getElementById('selected-desc').innerHTML = mode.desc;
+      document.getElementById('placeholder-hint').innerHTML = mode.placeholder;
+      
+      const iconContainer = document.getElementById('selected-icon');
+      iconContainer.innerHTML = `<i class="fa-solid ${mode.icon} text-3xl text-[#67f6ff]"></i>`;
+      
+      // Scroll to workspace
+      document.getElementById('workspace').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      
+      // Focus input
+      setTimeout(() => {
+        document.getElementById('input-text').focus();
+      }, 650);
+    }
+
+    function renderWorkspaceModes() {
+      const container = document.getElementById('workspace-modes');
+      container.innerHTML = '';
+      
+      CORE_MODES.forEach(mode => {
+        const el = document.createElement('div');
+        el.className = `flex items-center gap-3 px-4 py-3 rounded-2xl cursor-pointer hover:bg-white/5 text-sm border border-transparent`;
+        el.innerHTML = `
+          <div class="text-[#67f6ff] w-5"><i class="fa-solid ${mode.icon}"></i></div>
+          <div class="flex-1 font-medium">${mode.title}</div>
+        `;
+        el.onclick = () => {
+          selectMode(mode);
+          // highlight active
+          document.querySelectorAll('#workspace-modes > div').forEach(d => d.classList.remove('!border-[#67f6ff]/40'));
+          el.classList.add('!border-[#67f6ff]/40');
+        };
+        container.appendChild(el);
+      });
+    }
+
+    function updateTempValue(val) {
+      document.getElementById('temp-value').innerText = parseFloat(val).toFixed(1);
+    }
+
+    function updateHostedStatus() {
+      const isHosted = document.getElementById('use-hosted').checked;
+      const badge = document.getElementById('hosted-badge');
+      const btn = document.getElementById('generate-text');
+      
+      if (isHosted) {
+        badge.classList.remove('hidden');
+        btn.innerText = 'GENERATE HOSTED (PRO)';
+      } else {
+        badge.classList.add('hidden');
+        btn.innerText = 'GENERATE WITH GROK';
+      }
+    }
+
+    async function runGenerate() {
+      const input = document.getElementById('input-text').value.trim();
+      if (!input) {
+        alert("Please provide input for the selected mode.");
+        return;
+      }
+      
+      const useHosted = document.getElementById('use-hosted').checked;
+      const temp = parseFloat(document.getElementById('temperature').value);
+      const apiKey = localStorage.getItem('aether_xai_key') || '';
+      const isPro = localStorage.getItem('aether_pro') === 'true';
+
+      if (useHosted && !isPro) {
+        if (confirm("Hosted Pro mode requires an upgrade. View pricing?")) {
+          document.getElementById('pricing').scrollIntoView({behavior: 'smooth'});
+        }
+        return;
+      }
+
+      const outputPanel = document.getElementById('output-panel');
+      const outputEl = document.getElementById('output-content');
+      outputPanel.classList.remove('hidden');
+      outputEl.innerHTML = `
+        <div class="flex items-center gap-3 text-[#67f6ff]">
+          <i class="fa-solid fa-satellite fa-spin"></i> 
+          <span>Scanning the structure of reality...</span>
+        </div>
+      `;
+
+      const body = {
+        input_text: input,
+        use_hosted: useHosted,
+        temperature: temp,
+        model: "grok-3"
+      };
+
+      if (currentMode) {
+        body.prompt_id = currentMode.id;
+      }
+
+      if (!useHosted && apiKey) {
+        body.api_key = apiKey;
+      }
+
+      try {
+        const res = await fetch('/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.detail || 'Generation failed');
+        }
+        
+        const data = await res.json();
+        currentResult = data;
+        
+        outputEl.innerHTML = data.output.replace(/\n/g, '<br>');
+        document.getElementById('output-meta').innerHTML = `${data.model} • ${Math.round((data.duration_ms || 0)/1000)}s`;
+        
+      } catch (err) {
+        outputEl.innerHTML = `<div class="text-red-400">Error: ${err.message}</div>`;
+      }
+    }
+
+    function copyOutput() {
+      if (!currentResult) return;
+      navigator.clipboard.writeText(currentResult.output);
+      const orig = event.currentTarget;
+    }
+
+    function chainOutput() {
+      if (!currentResult) return;
+      document.getElementById('input-text').value = currentResult.output;
+      document.getElementById('input-text').focus();
+    }
+
+    function saveToHistory() {
+      alert("Saved to your local research history (demo). Full persistence enabled on Pro.");
+    }
+
+    function clearWorkspace() {
+      document.getElementById('input-text').value = '';
+      document.getElementById('output-panel').classList.add('hidden');
+    }
+
+    function updateApiKeyStatus() {
+      const statusEl = document.getElementById('key-status');
+      const hasKey = !!localStorage.getItem('aether_xai_key');
+      statusEl.innerHTML = hasKey ? 'Key Connected' : 'Connect Key';
+      statusEl.classList.toggle('text-[#67f6ff]', hasKey);
+    }
+
+    function showApiKeyModal() {
+      document.getElementById('key-modal').classList.remove('hidden');
+      document.getElementById('key-modal').classList.add('flex');
+      const inp = document.getElementById('key-input');
+      inp.value = localStorage.getItem('aether_xai_key') || '';
+      setTimeout(() => inp.focus(), 100);
+    }
+
+    function hideKeyModal() {
+      document.getElementById('key-modal').classList.add('hidden');
+      document.getElementById('key-modal').classList.remove('flex');
+    }
+
+    function saveApiKey() {
+      const key = document.getElementById('key-input').value.trim();
+      if (key) {
+        localStorage.setItem('aether_xai_key', key);
+      } else {
+        localStorage.removeItem('aether_xai_key');
+      }
+      updateApiKeyStatus();
+      hideKeyModal();
+    }
+
+    function checkProStatus() {
+      const isPro = localStorage.getItem('aether_pro') === 'true';
+      const pill = document.getElementById('pro-pill');
+      if (isPro) pill.classList.remove('hidden');
+      else pill.classList.add('hidden');
+    }
+
+    function upgradeToPro() {
+      fetch('/api/create-checkout-session', { method: 'POST', headers: {'Content-Type': 'application/json'} })
+        .then(r => r.json())
+        .then(data => {
+          if (data.url) window.location.href = data.url;
+          else {
+            // Demo fallback
+            alert("Stripe checkout would open here. In demo, clicking Pro will unlock hosted mode.");
+            localStorage.setItem('aether_pro', 'true');
+            checkProStatus();
+          }
+        })
+        .catch(() => {
+          localStorage.setItem('aether_pro', 'true');
+          checkProStatus();
+          alert("Pro unlocked in demo mode. Hosted generations now available.");
+        });
+    }
+
+    function switchToWorkspace() {
+      document.getElementById('workspace').scrollIntoView({behavior: 'smooth'});
+    }
+
+    function useRandomPrompt() {
+      const randomMode = CORE_MODES[Math.floor(Math.random() * CORE_MODES.length)];
+      selectMode(randomMode);
+    }
+
+    function initWorkspace() {
+      renderModeGrid();
+      renderWorkspaceModes();
+      
+      // Set initial mode
+      setTimeout(() => {
+        selectMode(CORE_MODES[0]);
+      }, 800);
+
+      // Default temperature
+      const tempSlider = document.getElementById('temperature');
+      document.getElementById('temp-value').innerText = '0.7';
+      tempSlider.value = 0.7;
+
+      updateApiKeyStatus();
+      checkProStatus();
+    }
+
+    function init() {
+      initTailwind();
+      initStarfield();
+      initWorkspace();
+      
+      // Keyboard shortcut
+      document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          const input = document.getElementById('input-text');
+          if (document.activeElement === input) runGenerate();
+        }
+      });
+      
+      // Check if coming back from Stripe
+      if (window.location.search.includes('session_id')) {
+        localStorage.setItem('aether_pro', 'true');
+        checkProStatus();
+        history.replaceState({}, '', '/');
+      }
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+# AETHER on Render.com
+# Deploy as Web Service
+
+services:
+  - type: web
+    name: aether-first-principles
+    env: python
+    region: oregon   # or frankfurt, etc.
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: XAI_API_KEY
+        sync: false   # Set this in Render dashboard (for hosted pro mode)
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_PUBLISHABLE_KEY
+        sync: false
+      - key: STRIPE_PRO_PRICE_ID
+        sync: false
+      - key: DEFAULT_MODEL
+        value: grok-3
+      - key: CORS_ORIGINS
+        value: "*"
+    # For persistent SQLite DB (recommended)
+    # After first deploy, go to Render dashboard > your service > Disks > Add Disk
+    # Mount path: /var/data
+    # Then set DATABASE_PATH=/var/data/aether.db in env vars
+    disk:
+      name: aether-data
+      mountPath: /var/data
+      sizeGB: 1
