@@ -7,13 +7,15 @@ Simple SQLite persistence for:
 """
 
 import sqlite3
-import json
+import os
 import time
 from pathlib import Path
 from typing import List, Optional, Dict, Any
 from contextlib import contextmanager
 
-DB_PATH_DEFAULT = Path(__file__).parent.parent / "data" / "aether.db"
+# Support DATABASE_PATH env var (used on Render with persistent disk)
+_db_env = os.getenv("DATABASE_PATH")
+DB_PATH_DEFAULT = Path(_db_env) if _db_env else (Path(__file__).parent.parent / "data" / "aether.db")
 
 @contextmanager
 def get_conn(db_path: Optional[Path] = None):

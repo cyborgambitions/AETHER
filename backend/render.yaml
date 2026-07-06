@@ -22,10 +22,11 @@ services:
         value: grok-3
       - key: CORS_ORIGINS
         value: "*"
-    # For persistent SQLite DB (recommended)
-    # After first deploy, go to Render dashboard > your service > Disks > Add Disk
-    # Mount path: /var/data
-    # Then set DATABASE_PATH=/var/data/aether.db in env vars
+      - key: DATABASE_PATH
+        value: /var/data/aether.db
+      - key: FRONTEND_URL
+        sync: false   # Set to your deployed https://...onrender.com after first deploy for Stripe redirects
+    # Persistent disk for SQLite (Render provisions on create if declared)
     disk:
       name: aether-data
       mountPath: /var/data
