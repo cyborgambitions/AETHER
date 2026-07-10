@@ -87,14 +87,31 @@ When deploying to Render:
 
 ## Deployment (Render.com)
 
-See `backend/DEPLOY.md` for step-by-step.
+**GitHub:** https://github.com/cyborgambitions/AETHER  
+**Deploy branch:** `v1-carnival-release` (production UI + backend; preferred)  
+**Blueprint file:** root `render.yaml` (`rootDir: backend`)
 
-High-level:
-1. Push this repo to GitHub
-2. Create Web Service on Render
-3. Set Root Directory to `backend`
-4. Add environment variables (XAI_API_KEY, optional Stripe keys)
-5. Add a persistent Disk for `DATABASE_PATH=/var/data/aether.db`
+### One-shot Blueprint
+
+1. Open [Render Dashboard → New Blueprint](https://dashboard.render.com/blueprints)
+2. Connect repo **cyborgambitions/AETHER**, branch **`v1-carnival-release`**
+3. Apply `render.yaml`
+4. Set secrets when prompted:
+   - `XAI_API_KEY` = your key from [console.x.ai](https://console.x.ai)
+   - `FRONTEND_URL` = your `https://….onrender.com` URL (after first deploy)
+5. Deploy → open the service URL
+
+### Manual Web Service
+
+1. [New Web Service](https://dashboard.render.com/select-repo?type=web) → this repo
+2. Branch: `v1-carnival-release`
+3. Root Directory: `backend`
+4. Build: `pip install -r requirements.txt`
+5. Start: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+6. Health check: `/api/health`
+7. Env: `XAI_API_KEY` (required for Hosted Pro), optional Stripe keys
+
+See `backend/DEPLOY.md` for full details. Free tier uses ephemeral SQLite (`data/aether.db`).
 
 ---
 
