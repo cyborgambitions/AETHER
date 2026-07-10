@@ -36,7 +36,7 @@
 
 Pre-filled by blueprint (leave as-is):
 - `DATABASE_PATH` = `data/aether.db`
-- `DEFAULT_MODEL` = `grok-4.3`
+- `DEFAULT_MODEL` = `grok-4.5`
 - `CORS_ORIGINS` = `*`
 - `PYTHON_VERSION` = `3.12.8`
 
@@ -75,7 +75,7 @@ Wait for **Live**. First free-tier build can take 5–10 minutes.
 ```
 XAI_API_KEY=xai-your-key-here
 DATABASE_PATH=data/aether.db
-DEFAULT_MODEL=grok-4.3
+DEFAULT_MODEL=grok-4.5
 CORS_ORIGINS=*
 FRONTEND_URL=https://YOUR-SERVICE.onrender.com
 ```

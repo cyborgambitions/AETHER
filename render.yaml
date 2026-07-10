@@ -18,7 +18,7 @@ services:
       - key: DATABASE_PATH
         value: data/aether.db
       - key: DEFAULT_MODEL
-        value: grok-4.3
+        value: grok-4.5
       - key: CORS_ORIGINS
         value: "*"
       - key: FRONTEND_URL

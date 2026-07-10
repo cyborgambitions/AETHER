@@ -1,26 +1,25 @@
 """
 AETHER xAI Grok Client
 Async proxy to xAI chat completions endpoint.
-Compatible with OpenAI client style (xAI uses OpenAI-compatible API).
+Sends a minimal OpenAI-compatible payload: model + cleaned messages only.
 """
 
 import os
 import time
 import httpx
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any, List, Union
 from dotenv import load_dotenv
 
 load_dotenv()
 
 XAI_BASE_URL = "https://api.x.ai/v1"
 
-# Current xAI chat models (as of 2026). grok-3 is retired for many keys.
-DEFAULT_MODEL = os.getenv("DEFAULT_MODEL", "grok-4.3")
+# Prefer grok-4.5; fall back if a key cannot access it
+DEFAULT_MODEL = os.getenv("DEFAULT_MODEL", "grok-4.5")
 
-# Tried in order if the requested model is rejected (400 model-not-found style)
 MODEL_FALLBACKS: List[str] = [
-    "grok-4.3",
     "grok-4.5",
+    "grok-4.3",
     "grok-4.20-0309-non-reasoning",
     "grok-4.20-0309-reasoning",
 ]
@@ -65,16 +64,48 @@ def _is_model_error(status: int, message: str) -> bool:
     )
 
 
+def clean_messages(messages: List[Dict[str, Any]]) -> List[Dict[str, str]]:
+    """
+    Keep only valid chat turns:
+      - role present
+      - content is a non-empty string
+    """
+    cleaned: List[Dict[str, str]] = []
+    for m in messages or []:
+        if not m or not isinstance(m, dict):
+            continue
+        role = m.get("role")
+        content = m.get("content")
+        if not role or not isinstance(content, str):
+            continue
+        text = content.strip()
+        if not text:
+            continue
+        cleaned.append({"role": str(role), "content": text})
+    return cleaned
+
+
+def _messages_from_prompt(prompt: str) -> List[Dict[str, str]]:
+    text = (prompt or "").strip()
+    if not text:
+        return []
+    return [{"role": "user", "content": text}]
+
+
 async def call_grok(
-    prompt: str,
+    prompt: Optional[str] = None,
     model: Optional[str] = None,
     api_key: Optional[str] = None,
+    messages: Optional[List[Dict[str, Any]]] = None,
+    # Kept for API compatibility with main.py / UI — not sent to xAI
     max_tokens: int = 2048,
     temperature: float = 0.7,
 ) -> Dict[str, Any]:
     """
-    Call xAI Grok. Returns dict with:
-      { "output": str, "model": str, "usage": {... or None}, "raw": ..., "duration_ms": int }
+    Call xAI Grok with a minimal payload:
+      { "model": "...", "messages": [ { role, content }, ... ] }
+
+    No max_tokens / temperature / stream — some Grok 4 endpoints 400 on extras.
     """
     key = (api_key or os.getenv("XAI_API_KEY") or "").strip()
     if not key:
@@ -83,15 +114,17 @@ async def call_grok(
             "Get a key at https://console.x.ai"
         )
 
-    # Clamp temperature — UI allows up to 1.2; API typically expects 0–2, but stay safe
-    try:
-        temperature = float(temperature)
-    except (TypeError, ValueError):
-        temperature = 0.7
-    temperature = max(0.0, min(temperature, 2.0))
+    if messages is not None:
+        clean = clean_messages(messages)
+    else:
+        clean = _messages_from_prompt(prompt or "")
 
-    requested = (model or DEFAULT_MODEL or "grok-4.3").strip()
-    # Build try order: requested first, then fallbacks (unique)
+    if not clean:
+        raise ValueError(
+            "No valid messages to send. Each message needs a role and non-empty string content."
+        )
+
+    requested = (model or DEFAULT_MODEL or "grok-4.5").strip()
     candidates: List[str] = []
     for m in [requested] + MODEL_FALLBACKS:
         if m and m not in candidates:
@@ -105,20 +138,14 @@ async def call_grok(
     start = time.time()
     last_error = "Unknown error"
     used_model = requested
+    data: Dict[str, Any] = {}
 
     async with httpx.AsyncClient(timeout=120.0) as client:
         for idx, candidate in enumerate(candidates):
+            # Minimal payload only — matches known-good client pattern
             payload = {
                 "model": candidate,
-                "messages": [
-                    {
-                        "role": "user",
-                        "content": prompt,
-                    }
-                ],
-                "max_tokens": max_tokens,
-                "temperature": temperature,
-                "stream": False,
+                "messages": clean,
             }
 
             resp = await client.post(
@@ -147,7 +174,6 @@ async def call_grok(
             message = _extract_error_message(resp)
             last_error = f"HTTP {resp.status_code}: {message}"
 
-            # Only fall back on model-related 400s; other 400s are real request problems
             if _is_model_error(resp.status_code, message) and idx < len(candidates) - 1:
                 continue
 
@@ -168,22 +194,19 @@ async def call_grok(
     try:
         content = data["choices"][0]["message"]["content"]
     except (KeyError, IndexError, TypeError):
-        content = str(data)
+        content = None
 
     if content is None:
-        # Some reasoning models may put text elsewhere
         try:
             msg = data["choices"][0]["message"]
             content = msg.get("reasoning_content") or msg.get("refusal") or str(msg)
         except Exception:
             content = str(data)
 
-    usage = data.get("usage")
-
     return {
         "output": content if isinstance(content, str) else str(content),
         "model": used_model,
-        "usage": usage,
+        "usage": data.get("usage"),
         "duration_ms": duration,
         "raw": data,
     }

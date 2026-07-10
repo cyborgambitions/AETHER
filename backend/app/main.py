@@ -40,7 +40,7 @@ class GenerateRequest(BaseModel):
     prompt_id: Optional[str] = Field(None, description="ID of a core or community prompt")
     custom_prompt: Optional[str] = Field(None, description="Raw prompt text (overrides prompt_id)")
     input_text: str = Field(..., description="The user's topic/claim/question to fill into template")
-    model: Optional[str] = Field(None, description="xAI model override, e.g. grok-4.3")
+    model: Optional[str] = Field(None, description="xAI model override, e.g. grok-4.5")
     api_key: Optional[str] = Field(None, description="Bring your own xAI API key (recommended for production use)")
     temperature: float = 0.7
     use_hosted: bool = Field(False, description="Use server-hosted key (Pro feature)")
