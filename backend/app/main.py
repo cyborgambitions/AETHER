@@ -40,7 +40,7 @@ class GenerateRequest(BaseModel):
     prompt_id: Optional[str] = Field(None, description="ID of a core or community prompt")
     custom_prompt: Optional[str] = Field(None, description="Raw prompt text (overrides prompt_id)")
     input_text: str = Field(..., description="The user's topic/claim/question to fill into template")
-    model: Optional[str] = Field(None, description="xAI model override, e.g. grok-3")
+    model: Optional[str] = Field(None, description="xAI model override, e.g. grok-4.3")
     api_key: Optional[str] = Field(None, description="Bring your own xAI API key (recommended for production use)")
     temperature: float = 0.7
     use_hosted: bool = Field(False, description="Use server-hosted key (Pro feature)")
@@ -177,6 +177,15 @@ async def generate(req: GenerateRequest):
     else:
         raise HTTPException(400, "Either prompt_id or custom_prompt must be provided")
 
+    if not filled or not str(filled).strip():
+        raise HTTPException(400, "Resolved prompt is empty. Provide input text and a mode.")
+
+    # Prefer client key, then server env; strip whitespace / accidental newlines from paste
+    if effective_api_key:
+        effective_api_key = effective_api_key.strip()
+    if not effective_api_key:
+        effective_api_key = (os.getenv("XAI_API_KEY") or "").strip() or None
+
     try:
         result = await call_grok(
             prompt=filled,
@@ -184,6 +193,9 @@ async def generate(req: GenerateRequest):
             api_key=effective_api_key,
             temperature=req.temperature or 0.7,
         )
+    except ValueError as e:
+        # Auth / config / model issues — show clean message to UI
+        raise HTTPException(502, str(e))
     except Exception as e:
         raise HTTPException(502, f"Grok call failed: {str(e)}")
 

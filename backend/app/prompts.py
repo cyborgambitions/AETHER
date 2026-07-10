@@ -121,11 +121,12 @@ def get_prompt_by_id(prompt_id: str) -> Optional[Prompt]:
     return None
 
 def fill_template(template: str, user_input: str) -> str:
-    """Simple replacement for the {input} placeholder used in all templates."""
-    if "{input}" in template:
-        return template.format(input=user_input)
+    """Replace {input} without str.format (user text may contain braces)."""
+    text = template or ""
+    if "{input}" in text:
+        return text.replace("{input}", user_input)
     # Fallbacks for legacy [PASTE ...] style if someone pastes raw
-    legacy = template.replace("[PASTE TOPIC HERE]", user_input)
+    legacy = text.replace("[PASTE TOPIC HERE]", user_input)
     legacy = legacy.replace("[PASTE CLAIM]", user_input)
     legacy = legacy.replace("[TOPIC]", user_input)
     legacy = legacy.replace("[YOUR QUESTION]", user_input)

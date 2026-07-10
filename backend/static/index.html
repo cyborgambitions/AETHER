@@ -1280,7 +1280,7 @@
         input_text: input,
         use_hosted: useHosted,
         temperature: temp,
-        model: "grok-3",
+        // Omit model so server DEFAULT_MODEL (grok-4.3+) is used
         prompt_id: currentMode.id
       };
 
