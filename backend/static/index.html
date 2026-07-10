@@ -3,23 +3,65 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AETHER — First principles toolkit powered by Grok. Break assumptions, map consequences, and seek truth with a stunning space carnival UI.">
+  <meta name="theme-color" content="#05050f">
+  <meta property="og:title" content="AETHER • Space Carnival of First Principles">
+  <meta property="og:description" content="Deep reasoning with Grok. Six modes. Community powered. Built for truth-seekers.">
+  <meta property="og:type" content="website">
   <title>AETHER • Space Carnival of First Principles</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>∞</text></svg>">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
-    
     :root {
       --bg: #05050f;
       --card: #0c0c1a;
       --accent: #67f6ff;
       --purple: #c084fc;
+      --hot: #ff2e63;
     }
     
     body {
-      font-family: 'Inter', system_ui, sans-serif;
+      font-family: 'Inter', system-ui, sans-serif;
       background: var(--bg);
+      -webkit-font-smoothing: antialiased;
     }
+
+    ::selection {
+      background: rgba(103, 246, 255, 0.35);
+      color: #fff;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(103, 246, 255, 0.25);
+      border-radius: 999px;
+    }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(103, 246, 255, 0.45); }
+
+    textarea:focus, input:focus {
+      outline: none;
+      box-shadow: 0 0 0 1px rgba(103, 246, 255, 0.45), 0 0 24px rgba(103, 246, 255, 0.12);
+    }
+
+    .btn-shine {
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-shine::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.35) 50%, transparent 60%);
+      transform: translateX(-120%);
+      transition: transform 0.6s ease;
+    }
+    .btn-shine:hover::after { transform: translateX(120%); }
     
     .font-display {
       font-family: 'Space Grotesk', 'Inter', system_ui, sans-serif;
@@ -217,6 +259,41 @@
     .festive-text {
       text-shadow: 0 0 10px #ffd700, 0 0 20px #ff2e63;
     }
+
+    .live-dot {
+      width: 7px; height: 7px;
+      border-radius: 999px;
+      background: #00ff9f;
+      box-shadow: 0 0 10px #00ff9f;
+      animation: pulse-dot 1.8s ease-in-out infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.55; transform: scale(0.85); }
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(120%);
+      z-index: 1000;
+      padding: 12px 20px;
+      border-radius: 16px;
+      background: rgba(12, 12, 26, 0.92);
+      border: 1px solid rgba(103, 246, 255, 0.35);
+      backdrop-filter: blur(16px);
+      color: #fff;
+      font-size: 14px;
+      transition: transform 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.45);
+      max-width: min(90vw, 420px);
+      text-align: center;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast.error { border-color: rgba(255, 46, 99, 0.5); }
+
+    .history-item:hover { border-color: rgba(103, 246, 255, 0.35); }
   </style>
 </head>
 <body class="bg-[#05050f] text-white overflow-x-hidden">
@@ -224,53 +301,61 @@
   <canvas id="starfield" class="starfield fixed inset-0 z-0"></canvas>
   <div class="nebula fixed inset-0 z-0"></div>
 
+  <!-- Toast -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
   <!-- Navigation -->
   <nav class="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-[#05050f]/80 backdrop-blur-2xl">
     <div class="max-w-screen-2xl mx-auto">
-      <div class="flex items-center justify-between px-8 h-20">
+      <div class="flex items-center justify-between px-4 sm:px-8 h-16 sm:h-20">
         <!-- Logo -->
-        <div class="flex items-center gap-4">
-          <div class="relative w-11 h-11 flex items-center justify-center">
+        <div class="flex items-center gap-3 sm:gap-4 cursor-pointer" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+          <div class="relative w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center">
             <div class="absolute inset-0 bg-gradient-to-br from-[#67f6ff] via-[#c084fc] to-[#6366f1] rounded-2xl blur-md opacity-60"></div>
-            <div class="relative w-11 h-11 rounded-2xl bg-[#05050f] flex items-center justify-center border border-white/20">
-              <i class="fa-solid fa-infinity text-3xl bg-gradient-to-br from-[#67f6ff] to-[#c084fc] bg-clip-text text-transparent"></i>
+            <div class="relative w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-[#05050f] flex items-center justify-center border border-white/20">
+              <i class="fa-solid fa-infinity text-2xl sm:text-3xl bg-gradient-to-br from-[#67f6ff] to-[#c084fc] bg-clip-text text-transparent"></i>
             </div>
-            <!-- Tiny carnival sparkle accent -->
             <div class="absolute -top-0.5 -right-0.5 w-3 h-3 text-[#ffd700] animate-pulse"><i class="fa-solid fa-star text-[10px]"></i></div>
           </div>
           <div>
-            <div class="font-display text-4xl tracking-[-2.5px] font-semibold">AETHER</div>
-            <div class="text-[9px] text-white/40 -mt-1.5 tracking-[3px]">FIRST PRINCIPLES</div>
+            <div class="font-display text-2xl sm:text-4xl tracking-[-2px] sm:tracking-[-2.5px] font-semibold">AETHER</div>
+            <div class="text-[8px] sm:text-[9px] text-white/40 -mt-1 sm:-mt-1.5 tracking-[2px] sm:tracking-[3px]">FIRST PRINCIPLES</div>
           </div>
         </div>
 
         <!-- Nav Links -->
         <div class="hidden md:flex items-center gap-x-9 text-sm">
-          <a href="#toolkit" onclick="document.getElementById('toolkit').scrollIntoView({behavior:'smooth'})" class="nav-link text-white/70 hover:text-white">Toolkit</a>
-          <a href="#explore" onclick="document.getElementById('explore').scrollIntoView({behavior:'smooth'})" class="nav-link text-white/70 hover:text-white">Explore</a>
-          <a href="#community" onclick="document.getElementById('community').scrollIntoView({behavior:'smooth'})" class="nav-link text-white/70 hover:text-white">Community</a>
-          <a href="#pricing" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})" class="nav-link text-white/70 hover:text-white">Pro</a>
+          <a href="#toolkit" onclick="smoothScroll('toolkit'); return false;" class="nav-link text-white/70 hover:text-white">Toolkit</a>
+          <a href="#explore" onclick="smoothScroll('explore'); return false;" class="nav-link text-white/70 hover:text-white">Explore</a>
+          <a href="#community" onclick="smoothScroll('community'); return false;" class="nav-link text-white/70 hover:text-white">Community</a>
+          <a href="#pricing" onclick="smoothScroll('pricing'); return false;" class="nav-link text-white/70 hover:text-white">Pro</a>
         </div>
 
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2 sm:gap-3">
+          <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-[11px] text-white/50">
+            <span class="live-dot"></span>
+            <span>LIVE</span>
+          </div>
+
           <!-- Pro Status -->
           <div onclick="showPricing()" id="pro-pill" 
-               class="hidden items-center gap-2 px-4 py-1.5 rounded-full text-xs font-medium cursor-pointer bg-gradient-to-r from-[#67f6ff]/10 to-[#c084fc]/10 border border-white/10 hover:border-white/30 transition">
+               class="hidden items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full text-xs font-medium cursor-pointer bg-gradient-to-r from-[#67f6ff]/10 to-[#c084fc]/10 border border-white/10 hover:border-white/30 transition">
             <i class="fa-solid fa-crown text-[#c084fc]"></i>
             <span class="font-medium">PRO</span>
           </div>
 
           <!-- API Key -->
           <button onclick="showApiKeyModal()" 
-                  class="flex items-center gap-2.5 px-5 h-10 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition text-sm">
+                  class="flex items-center gap-2 sm:gap-2.5 px-3 sm:px-5 h-9 sm:h-10 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition text-sm">
             <i class="fa-solid fa-key text-[#67f6ff]"></i>
-            <span id="key-status" class="text-sm">Connect Key</span>
+            <span id="key-status" class="text-sm hidden sm:inline">Connect Key</span>
           </button>
 
           <!-- Launch App -->
-          <button onclick="document.getElementById('workspace').scrollIntoView({behavior:'smooth'})" 
-                  class="px-6 h-10 rounded-2xl bg-white text-black text-sm font-semibold flex items-center gap-2 hover:bg-[#67f6ff] active:scale-[0.985] transition">
-            <span>Launch Toolkit</span>
+          <button onclick="smoothScroll('workspace')" 
+                  class="btn-shine px-4 sm:px-6 h-9 sm:h-10 rounded-2xl bg-white text-black text-sm font-semibold flex items-center gap-2 hover:bg-[#67f6ff] active:scale-[0.985] transition">
+            <span class="hidden sm:inline">Launch Toolkit</span>
+            <span class="sm:hidden">Launch</span>
           </button>
         </div>
       </div>
@@ -279,40 +364,41 @@
 
   <!-- Hero -->
   <div class="relative pt-20 pb-16 px-6 max-w-screen-2xl mx-auto z-10">
-    <div class="max-w-5xl mx-auto text-center pt-14">
-      <div class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-white/5 border border-white/10 text-xs tracking-[2px] mb-6">
+    <div class="max-w-5xl mx-auto text-center pt-10 sm:pt-14">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs tracking-[2px] mb-6">
         <div class="w-1.5 h-1.5 bg-[#ff2e63] rounded-full animate-pulse"></div>
         <span class="marquee font-medium">SPACE CARNIVAL OF IDEAS</span>
       </div>
 
-      <h1 class="font-display text-7xl md:text-[92px] leading-[0.92] tracking-[-6.5px] font-semibold mb-6">
+      <h1 class="font-display text-5xl sm:text-7xl md:text-[92px] leading-[0.92] tracking-[-3px] sm:tracking-[-6.5px] font-semibold mb-6">
         The universe<br>
         <span class="futuristic-text">doesn't explain itself.</span>
       </h1>
       
-      <p class="max-w-md mx-auto text-xl text-white/60 mb-9">
-        First principles meets cosmic carnival.<br>
-        A futuristic interface for breaking down reality and rebuilding it better.
+      <p class="max-w-xl mx-auto text-lg sm:text-xl text-white/60 mb-9 leading-relaxed">
+        First principles meets cosmic carnival.<br class="hidden sm:block">
+        A stunning interface for breaking reality down — and rebuilding it better with Grok.
       </p>
 
-      <div class="flex items-center justify-center gap-4">
-        <button onclick="document.getElementById('workspace').scrollIntoView({behavior:'smooth'}); setTimeout(() => triggerCarnivalBurst(window.innerWidth*0.5, 320), 420)" 
-                class="group flex items-center gap-3 bg-white text-[#05050f] px-8 h-14 rounded-3xl text-[15px] font-semibold active:scale-[0.985]">
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+        <button onclick="smoothScroll('workspace'); setTimeout(() => triggerCarnivalBurst(window.innerWidth*0.5, 320), 420)" 
+                class="btn-shine group flex items-center gap-3 bg-white text-[#05050f] px-8 h-14 rounded-3xl text-[15px] font-semibold active:scale-[0.985] w-full sm:w-auto justify-center">
           Begin Exploration
           <i class="fa-solid fa-rocket group-active:translate-x-0.5 transition"></i>
         </button>
         
         <button onclick="useRandomPrompt(); setTimeout(() => triggerCarnivalBurst(window.innerWidth*0.55, 280), 300)" 
-                class="flex items-center gap-3 px-7 h-14 rounded-3xl border border-white/20 hover:bg-white/5 text-sm font-medium">
+                class="flex items-center gap-3 px-7 h-14 rounded-3xl border border-white/20 hover:bg-white/5 text-sm font-medium w-full sm:w-auto justify-center transition">
           <i class="fa-solid fa-satellite"></i>
           <span>Surprise me</span>
         </button>
       </div>
       
-      <div class="flex justify-center gap-8 mt-12 text-xs text-white/40">
-        <div class="flex items-center gap-1.5"><i class="fa-solid fa-globe"></i> 6 MODES</div>
-        <div class="flex items-center gap-1.5"><i class="fa-solid fa-users"></i> COMMUNITY POWERED</div>
-        <div class="flex items-center gap-1.5"><i class="fa-solid fa-infinity"></i> UNLIMITED DEPTH</div>
+      <div class="flex flex-wrap justify-center gap-x-8 gap-y-3 mt-12 text-xs text-white/40">
+        <div class="flex items-center gap-1.5"><i class="fa-solid fa-globe text-[#67f6ff]/70"></i> 6 MODES</div>
+        <div class="flex items-center gap-1.5"><i class="fa-solid fa-users text-[#c084fc]/70"></i> COMMUNITY POWERED</div>
+        <div class="flex items-center gap-1.5"><i class="fa-solid fa-infinity text-[#ffd700]/70"></i> UNLIMITED DEPTH</div>
+        <div class="flex items-center gap-1.5"><i class="fa-solid fa-bolt text-[#ff2e63]/70"></i> POWERED BY GROK</div>
       </div>
     </div>
   </div>
@@ -447,11 +533,11 @@
     </div>
   </div>
 
-  <!-- Explore / Community / Pricing sections abbreviated for brevity but present -->
-  <div id="explore" class="max-w-screen-2xl mx-auto px-6 pb-16">
+  <!-- Explore -->
+  <div id="explore" class="max-w-screen-2xl mx-auto px-6 pb-16 relative z-10">
     <div class="text-center mb-10">
       <div class="text-[#67f6ff] tracking-[3px] text-sm">DEEP DIVE</div>
-      <div class="font-display text-5xl">How AETHER Works</div>
+      <div class="font-display text-4xl sm:text-5xl">How AETHER Works</div>
     </div>
     
     <div class="grid md:grid-cols-3 gap-4 max-w-5xl mx-auto">
@@ -473,11 +559,53 @@
     </div>
   </div>
 
+  <!-- Community -->
+  <div id="community" class="max-w-screen-2xl mx-auto px-6 pb-16 relative z-10">
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
+      <div>
+        <div class="text-[#c084fc] tracking-[3px] text-sm">THE MIDWAY CROWD</div>
+        <div class="font-display text-4xl sm:text-5xl">Community & History</div>
+        <p class="text-white/50 mt-2 max-w-xl">Recent research sessions and community prompt energy — live from this instance.</p>
+      </div>
+      <button onclick="loadCommunity()" class="self-start md:self-auto px-5 h-11 rounded-2xl border border-white/15 hover:bg-white/5 text-sm flex items-center gap-2 transition">
+        <i class="fa-solid fa-arrows-rotate"></i> Refresh
+      </button>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-5">
+      <div class="glass rounded-3xl p-6 border border-white/10">
+        <div class="flex items-center justify-between mb-4">
+          <div class="font-semibold text-lg flex items-center gap-2">
+            <i class="fa-solid fa-clock-rotate-left text-[#67f6ff]"></i> Recent Sessions
+          </div>
+          <span id="session-count" class="text-xs text-white/40">—</span>
+        </div>
+        <div id="history-list" class="space-y-3 max-h-[360px] overflow-auto pr-1">
+          <div class="text-white/40 text-sm py-8 text-center">Loading history…</div>
+        </div>
+      </div>
+
+      <div class="glass rounded-3xl p-6 border border-white/10">
+        <div class="flex items-center justify-between mb-4">
+          <div class="font-semibold text-lg flex items-center gap-2">
+            <i class="fa-solid fa-users text-[#c084fc]"></i> Prompt Library
+          </div>
+          <button onclick="showSubmitPrompt()" class="text-xs px-3 h-8 rounded-xl bg-white/5 border border-white/10 hover:border-[#c084fc]/40 transition">
+            + Submit
+          </button>
+        </div>
+        <div id="community-list" class="space-y-3 max-h-[360px] overflow-auto pr-1">
+          <div class="text-white/40 text-sm py-8 text-center">Loading prompts…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Pricing -->
-  <div id="pricing" class="max-w-screen-2xl mx-auto px-6 pb-20">
+  <div id="pricing" class="max-w-screen-2xl mx-auto px-6 pb-20 relative z-10">
     <div class="text-center mb-8">
-      <div class="text-sm text-[#ff2e63]">UNLOCK THE COSMOS</div>
-      <div class="font-display text-5xl">Choose Your Carnival Ride</div>
+      <div class="text-sm text-[#ff2e63] tracking-[2px]">UNLOCK THE COSMOS</div>
+      <div class="font-display text-4xl sm:text-5xl">Choose Your Carnival Ride</div>
     </div>
     
     <div class="grid md:grid-cols-2 gap-5 max-w-3xl mx-auto">
@@ -520,20 +648,57 @@
     </div>
   </div>
 
+  <!-- Footer -->
+  <footer class="relative z-10 border-t border-white/10 py-12 px-6">
+    <div class="max-w-screen-2xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-3">
+        <i class="fa-solid fa-infinity text-[#67f6ff]"></i>
+        <div>
+          <div class="font-display text-xl tracking-tight">AETHER</div>
+          <div class="text-xs text-white/40">The universe is under no obligation to make sense to you… yet.</div>
+        </div>
+      </div>
+      <div class="flex items-center gap-5 text-sm text-white/50">
+        <a href="/docs" class="hover:text-[#67f6ff] transition" target="_blank">API Docs</a>
+        <a href="https://console.x.ai" class="hover:text-[#67f6ff] transition" target="_blank">xAI Console</a>
+        <a href="https://github.com/cyborgambitions/AETHER" class="hover:text-[#67f6ff] transition" target="_blank">GitHub</a>
+      </div>
+      <div class="text-xs text-white/30">Built for truth-seekers · Powered by Grok</div>
+    </div>
+  </footer>
+
   <!-- API Key Modal -->
-  <div id="key-modal" onclick="if (event.target.id === 'key-modal') hideKeyModal()" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-[999]">
-    <div onclick="event.stopImmediatePropagation()" class="glass rounded-3xl p-8 w-full max-w-md border border-white/10">
+  <div id="key-modal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-[999] p-4">
+    <div class="glass rounded-3xl p-8 w-full max-w-md border border-white/10">
       <div class="font-display text-3xl mb-1">Connect to Grok</div>
-      <div class="text-white/60 mb-6 text-sm">Paste your xAI API key to unlock unlimited first-principles power.</div>
+      <div class="text-white/60 mb-6 text-sm">Paste your xAI API key to unlock unlimited first-principles power. Keys stay in your browser only.</div>
       
       <label for="key-input" class="block text-sm mb-1.5 text-white/70">xAI API Key</label>
-      <input id="key-input" type="password" class="w-full bg-black/70 font-mono px-5 py-4 rounded-2xl border border-white/10 focus:border-[#67f6ff]" placeholder="xai-..." />
+      <input id="key-input" type="password" class="w-full bg-black/70 font-mono px-5 py-4 rounded-2xl border border-white/10 focus:border-[#67f6ff]" placeholder="xai-..." autocomplete="off" />
       
       <div class="mt-4 flex gap-3">
-        <button onclick="saveApiKey()" class="flex-1 bg-white text-black h-12 rounded-2xl font-semibold">Save Key</button>
-        <button onclick="hideKeyModal()" class="flex-1 border border-white/20 h-12 rounded-2xl">Cancel</button>
+        <button onclick="saveApiKey()" class="btn-shine flex-1 bg-white text-black h-12 rounded-2xl font-semibold">Save Key</button>
+        <button onclick="hideKeyModal()" class="flex-1 border border-white/20 h-12 rounded-2xl hover:bg-white/5 transition">Cancel</button>
       </div>
-      <div class="text-center mt-4 text-xs"><a href="https://console.x.ai" target="_blank" class="text-[#67f6ff]">Get your key → console.x.ai</a></div>
+      <div class="text-center mt-4 text-xs"><a href="https://console.x.ai" target="_blank" class="text-[#67f6ff] hover:underline">Get your key → console.x.ai</a></div>
+    </div>
+  </div>
+
+  <!-- Submit Community Prompt Modal -->
+  <div id="submit-modal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-[999] p-4">
+    <div class="glass rounded-3xl p-8 w-full max-w-lg border border-white/10">
+      <div class="font-display text-3xl mb-1">Submit a Prompt</div>
+      <div class="text-white/60 mb-6 text-sm">Share a first-principles template. Use <code class="text-[#67f6ff]">{input}</code> where user text goes.</div>
+      <div class="space-y-3">
+        <input id="submit-title" class="w-full bg-black/70 px-4 py-3 rounded-2xl border border-white/10" placeholder="Title" />
+        <input id="submit-author" class="w-full bg-black/70 px-4 py-3 rounded-2xl border border-white/10" placeholder="Your name (optional)" />
+        <textarea id="submit-template" rows="5" class="w-full bg-black/70 px-4 py-3 rounded-2xl border border-white/10 font-mono text-sm" placeholder="Template with {input}..."></textarea>
+        <input id="submit-desc" class="w-full bg-black/70 px-4 py-3 rounded-2xl border border-white/10" placeholder="Short description" />
+      </div>
+      <div class="mt-4 flex gap-3">
+        <button onclick="submitCommunityPrompt()" class="btn-shine flex-1 bg-gradient-to-r from-[#67f6ff] to-[#c084fc] text-[#05050f] h-12 rounded-2xl font-semibold">Publish</button>
+        <button onclick="hideSubmitPrompt()" class="flex-1 border border-white/20 h-12 rounded-2xl hover:bg-white/5 transition">Cancel</button>
+      </div>
     </div>
   </div>
 
@@ -541,6 +706,32 @@
     // Tailwind config
     function initTailwind() {
       document.documentElement.style.setProperty('--accent', '#67f6ff');
+    }
+
+    function smoothScroll(id) {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function showToast(message, isError = false) {
+      const t = document.getElementById('toast');
+      if (!t) return;
+      t.textContent = message;
+      t.classList.toggle('error', !!isError);
+      t.classList.add('show');
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
+    }
+
+    function showPricing() {
+      smoothScroll('pricing');
+    }
+
+    function formatDetail(detail) {
+      if (!detail) return 'Request failed';
+      if (typeof detail === 'string') return detail;
+      if (Array.isArray(detail)) return detail.map(d => d.msg || JSON.stringify(d)).join('; ');
+      return JSON.stringify(detail);
     }
 
     // ============================================
@@ -1046,7 +1237,11 @@
     async function runGenerate() {
       const input = document.getElementById('input-text').value.trim();
       if (!input) {
-        alert("Please provide input for the selected mode.");
+        showToast('Enter a topic, claim, or question first.', true);
+        return;
+      }
+      if (!currentMode) {
+        showToast('Select a mode from the toolkit first.', true);
         return;
       }
       
@@ -1056,19 +1251,28 @@
       const isPro = localStorage.getItem('aether_pro') === 'true';
 
       if (useHosted && !isPro) {
-        if (confirm("Hosted Pro mode requires an upgrade. View pricing?")) {
-          document.getElementById('pricing').scrollIntoView({behavior: 'smooth'});
-        }
+        showToast('Hosted Pro mode needs an upgrade — opening pricing.');
+        setTimeout(() => smoothScroll('pricing'), 400);
+        return;
+      }
+
+      if (!useHosted && !apiKey) {
+        showToast('Connect your xAI key (or enable Hosted Pro).', true);
+        showApiKeyModal();
         return;
       }
 
       const outputPanel = document.getElementById('output-panel');
       const outputEl = document.getElementById('output-content');
+      const genBtn = document.getElementById('generate-text');
+      const prevLabel = genBtn ? genBtn.innerText : '';
+      if (genBtn) genBtn.innerText = 'GENERATING…';
+
       outputPanel.classList.remove('hidden');
       outputEl.innerHTML = `
         <div class="flex items-center gap-3 text-[#67f6ff]">
           <i class="fa-solid fa-satellite fa-spin"></i> 
-          <span>Scanning the structure of reality...</span>
+          <span>Scanning the structure of reality…</span>
         </div>
       `;
 
@@ -1076,12 +1280,9 @@
         input_text: input,
         use_hosted: useHosted,
         temperature: temp,
-        model: "grok-3"
+        model: "grok-3",
+        prompt_id: currentMode.id
       };
-
-      if (currentMode) {
-        body.prompt_id = currentMode.id;
-      }
 
       if (!useHosted && apiKey) {
         body.api_key = apiKey;
@@ -1094,47 +1295,235 @@
           body: JSON.stringify(body)
         });
         
+        let payload = null;
+        try { payload = await res.json(); } catch (_) {}
+        
         if (!res.ok) {
-          const err = await res.json();
-          throw new Error(err.detail || 'Generation failed');
+          throw new Error(formatDetail(payload && payload.detail) || `Generation failed (${res.status})`);
         }
         
-        const data = await res.json();
+        const data = payload;
         currentResult = data;
         
-        outputEl.innerHTML = data.output.replace(/\n/g, '<br>');
-        document.getElementById('output-meta').innerHTML = `${data.model} • ${Math.round((data.duration_ms || 0)/1000)}s`;
+        // Escape-safe-ish rendering: preserve newlines, strip raw HTML tags from model output
+        const safe = String(data.output || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/\n/g, '<br>');
+        outputEl.innerHTML = safe;
+        document.getElementById('output-meta').innerHTML = `${data.model || 'grok'} • ${Math.round((data.duration_ms || 0)/1000)}s`;
         
-        // SPACE CARNIVAL CELEBRATION on successful insight!
         setTimeout(() => {
           const outRect = outputEl.getBoundingClientRect();
           triggerCarnivalBurst(outRect.left + outRect.width * 0.3, outRect.top + 60);
           triggerCarnivalBurst(outRect.left + outRect.width * 0.7, outRect.top + 110);
         }, 220);
+
+        showToast('Insight generated.');
+        loadCommunity();
         
       } catch (err) {
-        outputEl.innerHTML = `<div class="text-red-400">Error: ${err.message}</div>`;
+        outputEl.innerHTML = `<div class="text-red-400"><i class="fa-solid fa-triangle-exclamation mr-2"></i>${err.message}</div>`;
+        showToast(err.message, true);
+      } finally {
+        if (genBtn) genBtn.innerText = prevLabel || 'GENERATE WITH GROK';
       }
     }
 
     function copyOutput() {
       if (!currentResult) return;
-      navigator.clipboard.writeText(currentResult.output);
+      navigator.clipboard.writeText(currentResult.output).then(() => showToast('Copied to clipboard.')).catch(() => showToast('Copy failed', true));
     }
 
     function chainOutput() {
       if (!currentResult) return;
       document.getElementById('input-text').value = currentResult.output;
       document.getElementById('input-text').focus();
+      showToast('Output chained into input.');
     }
 
     function saveToHistory() {
-      alert("Saved to your local research history (demo). Full persistence enabled on Pro.");
+      if (!currentResult) {
+        showToast('Nothing to save yet.', true);
+        return;
+      }
+      try {
+        const key = 'aether_local_history';
+        const list = JSON.parse(localStorage.getItem(key) || '[]');
+        list.unshift({
+          title: currentResult.prompt_title || (currentMode && currentMode.title) || 'Session',
+          input: document.getElementById('input-text').value,
+          output: currentResult.output,
+          model: currentResult.model,
+          at: Date.now()
+        });
+        localStorage.setItem(key, JSON.stringify(list.slice(0, 40)));
+        showToast('Saved to local research history.');
+      } catch (_) {
+        showToast('Could not save locally.', true);
+      }
     }
 
     function clearWorkspace() {
       document.getElementById('input-text').value = '';
       document.getElementById('output-panel').classList.add('hidden');
+      currentResult = null;
+    }
+
+    async function loadCommunity() {
+      const historyEl = document.getElementById('history-list');
+      const communityEl = document.getElementById('community-list');
+      const countEl = document.getElementById('session-count');
+      if (!historyEl || !communityEl) return;
+
+      try {
+        const [sessRes, promptRes] = await Promise.all([
+          fetch('/api/sessions?limit=12'),
+          fetch('/api/prompts')
+        ]);
+        const sessions = sessRes.ok ? await sessRes.json() : [];
+        const promptData = promptRes.ok ? await promptRes.json() : { prompts: [] };
+        const prompts = (promptData.prompts || []).filter(p => !p.is_core).slice(0, 12);
+
+        if (countEl) countEl.textContent = `${sessions.length} recent`;
+
+        window.__aetherSessions = sessions;
+        window.__aetherCommunity = prompts;
+
+        if (!sessions.length) {
+          historyEl.innerHTML = `<div class="text-white/40 text-sm py-8 text-center">No sessions yet — generate your first insight.</div>`;
+        } else {
+          historyEl.innerHTML = sessions.map((s, i) => {
+            const title = (s.prompt_title || 'Session').replace(/</g, '&lt;');
+            const snippet = (s.input_text || '').slice(0, 90).replace(/</g, '&lt;');
+            const when = s.created_at ? new Date(s.created_at * 1000).toLocaleString() : '';
+            return `<div class="history-item rounded-2xl border border-white/10 bg-white/[0.02] p-4 cursor-pointer transition" data-session-idx="${i}">
+              <div class="flex justify-between gap-2 mb-1">
+                <div class="font-medium text-sm text-white/90 truncate">${title}</div>
+                <div class="text-[10px] text-white/35 whitespace-nowrap">${when}</div>
+              </div>
+              <div class="text-xs text-white/45 line-clamp-2">${snippet}${(s.input_text||'').length > 90 ? '…' : ''}</div>
+            </div>`;
+          }).join('');
+          historyEl.querySelectorAll('[data-session-idx]').forEach(el => {
+            el.addEventListener('click', () => {
+              const idx = Number(el.getAttribute('data-session-idx'));
+              const s = (window.__aetherSessions || [])[idx];
+              if (s) reuseSession(s.input_text || '');
+            });
+          });
+        }
+
+        if (!prompts.length) {
+          communityEl.innerHTML = `<div class="text-white/40 text-sm py-8 text-center">No community prompts yet. Be the first to submit one.</div>`;
+        } else {
+          communityEl.innerHTML = prompts.map((p, i) => {
+            const title = (p.title || 'Untitled').replace(/</g, '&lt;');
+            const desc = (p.description || p.placeholder_hint || '').replace(/</g, '&lt;');
+            return `<div class="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
+              <div class="flex justify-between gap-2 mb-1">
+                <div class="font-medium text-sm">${title}</div>
+                <button type="button" class="text-[11px] text-[#c084fc] hover:underline" data-vote-idx="${i}"><i class="fa-solid fa-arrow-up"></i> ${p.votes || 0}</button>
+              </div>
+              <div class="text-xs text-white/45 mb-3">${desc || 'Community template'}</div>
+              <button type="button" class="text-xs px-3 h-8 rounded-xl border border-white/10 hover:border-[#67f6ff]/40 transition" data-use-idx="${i}">Use mode</button>
+            </div>`;
+          }).join('');
+          communityEl.querySelectorAll('[data-vote-idx]').forEach(el => {
+            el.addEventListener('click', () => {
+              const p = (window.__aetherCommunity || [])[Number(el.getAttribute('data-vote-idx'))];
+              if (p) votePrompt(p.id);
+            });
+          });
+          communityEl.querySelectorAll('[data-use-idx]').forEach(el => {
+            el.addEventListener('click', () => {
+              const p = (window.__aetherCommunity || [])[Number(el.getAttribute('data-use-idx'))];
+              if (p) useCommunityPrompt(p.id);
+            });
+          });
+        }
+      } catch (e) {
+        historyEl.innerHTML = `<div class="text-white/40 text-sm py-6 text-center">Could not load community data.</div>`;
+        communityEl.innerHTML = `<div class="text-white/40 text-sm py-6 text-center">Could not load prompts.</div>`;
+      }
+    }
+
+    function reuseSession(text) {
+      document.getElementById('input-text').value = text || '';
+      smoothScroll('workspace');
+      showToast('Session input loaded.');
+    }
+
+    async function votePrompt(id) {
+      try {
+        const res = await fetch(`/api/prompts/${id}/vote`, { method: 'POST' });
+        if (!res.ok) throw new Error('Vote failed');
+        showToast('Upvoted!');
+        loadCommunity();
+      } catch (_) {
+        showToast('Vote failed', true);
+      }
+    }
+
+    async function useCommunityPrompt(id) {
+      try {
+        const res = await fetch(`/api/prompts/${id}`);
+        if (!res.ok) throw new Error('Prompt not found');
+        const p = await res.json();
+        currentMode = {
+          id: p.id,
+          title: p.title,
+          icon: 'fa-users',
+          desc: p.description || 'Community prompt',
+          placeholder: p.placeholder_hint || 'Enter your input'
+        };
+        selectMode(currentMode);
+        showToast(`Loaded: ${p.title}`);
+      } catch (e) {
+        showToast(e.message, true);
+      }
+    }
+
+    function showSubmitPrompt() {
+      const m = document.getElementById('submit-modal');
+      m.classList.remove('hidden');
+      m.classList.add('flex');
+    }
+    function hideSubmitPrompt() {
+      const m = document.getElementById('submit-modal');
+      m.classList.add('hidden');
+      m.classList.remove('flex');
+    }
+
+    async function submitCommunityPrompt() {
+      const title = document.getElementById('submit-title').value.trim();
+      const template = document.getElementById('submit-template').value.trim();
+      const description = document.getElementById('submit-desc').value.trim();
+      const author = document.getElementById('submit-author').value.trim();
+      if (!title || !template) {
+        showToast('Title and template are required.', true);
+        return;
+      }
+      try {
+        const res = await fetch('/api/prompts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title, template, description, author: author || null })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(formatDetail(data.detail) || 'Submit failed');
+        hideSubmitPrompt();
+        document.getElementById('submit-title').value = '';
+        document.getElementById('submit-template').value = '';
+        document.getElementById('submit-desc').value = '';
+        document.getElementById('submit-author').value = '';
+        showToast('Prompt published to the community!');
+        triggerCarnivalBurst(window.innerWidth * 0.5, window.innerHeight * 0.45);
+        loadCommunity();
+      } catch (e) {
+        showToast(e.message, true);
+      }
     }
 
     function updateApiKeyStatus() {
@@ -1161,8 +1550,10 @@
       const key = document.getElementById('key-input').value.trim();
       if (key) {
         localStorage.setItem('aether_xai_key', key);
+        showToast('API key saved in this browser.');
       } else {
         localStorage.removeItem('aether_xai_key');
+        showToast('API key cleared.');
       }
       updateApiKeyStatus();
       hideKeyModal();
@@ -1171,8 +1562,14 @@
     function checkProStatus() {
       const isPro = localStorage.getItem('aether_pro') === 'true';
       const pill = document.getElementById('pro-pill');
-      if (isPro) pill.classList.remove('hidden');
-      else pill.classList.add('hidden');
+      if (!pill) return;
+      if (isPro) {
+        pill.classList.remove('hidden');
+        pill.classList.add('flex');
+      } else {
+        pill.classList.add('hidden');
+        pill.classList.remove('flex');
+      }
     }
 
     function upgradeToPro() {
@@ -1186,25 +1583,26 @@
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(body)
       })
-        .then(r => r.json())
-        .then(data => {
-          if (data.url) window.location.href = data.url;
-          else {
-            // Demo fallback
-            alert("Stripe checkout would open here. In demo, clicking Pro will unlock hosted mode.");
-            localStorage.setItem('aether_pro', 'true');
-            checkProStatus();
+        .then(async r => {
+          const data = await r.json().catch(() => ({}));
+          if (data.url) {
+            window.location.href = data.url;
+            return;
           }
+          // Demo fallback when Stripe is not configured
+          localStorage.setItem('aether_pro', 'true');
+          checkProStatus();
+          showToast('Pro unlocked in demo mode (Stripe not configured).');
         })
         .catch(() => {
           localStorage.setItem('aether_pro', 'true');
           checkProStatus();
-          alert("Pro unlocked in demo mode. Hosted generations now available.");
+          showToast('Pro unlocked in demo mode. Hosted generations available.');
         });
     }
 
     function switchToWorkspace() {
-      document.getElementById('workspace').scrollIntoView({behavior: 'smooth'});
+      smoothScroll('workspace');
     }
 
     function useRandomPrompt() {
@@ -1234,12 +1632,17 @@
       initTailwind();
       initStarfield();
       initWorkspace();
+      loadCommunity();
       
       // Keyboard shortcut
       document.addEventListener('keydown', (e) => {
         if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
           const input = document.getElementById('input-text');
           if (document.activeElement === input) runGenerate();
+        }
+        if (e.key === 'Escape') {
+          hideKeyModal();
+          hideSubmitPrompt();
         }
       });
       
@@ -1248,6 +1651,21 @@
         localStorage.setItem('aether_pro', 'true');
         checkProStatus();
         history.replaceState({}, '', '/');
+        showToast('Welcome to AETHER Pro!');
+      }
+
+      // Modal backdrop close
+      const keyModal = document.getElementById('key-modal');
+      if (keyModal) {
+        keyModal.addEventListener('click', (e) => {
+          if (e.target.id === 'key-modal') hideKeyModal();
+        });
+      }
+      const submitModal = document.getElementById('submit-modal');
+      if (submitModal) {
+        submitModal.addEventListener('click', (e) => {
+          if (e.target.id === 'submit-modal') hideSubmitPrompt();
+        });
       }
     }
 

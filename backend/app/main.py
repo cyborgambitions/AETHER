@@ -15,6 +15,9 @@ import uuid
 from typing import Optional, List, Dict, Any
 from pathlib import Path
 
+from dotenv import load_dotenv
+load_dotenv()
+
 from fastapi import FastAPI, HTTPException, Query, Body, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -100,7 +103,13 @@ def startup():
 
 @app.get("/api/health")
 def health():
-    return {"status": "ok", "service": "aether", "time": int(time.time())}
+    return {
+        "status": "ok",
+        "service": "aether",
+        "time": int(time.time()),
+        "hosted_key_configured": bool(os.getenv("XAI_API_KEY")),
+        "stripe_configured": bool(stripe.api_key and STRIPE_PRO_PRICE_ID),
+    }
 
 @app.get("/api/prompts")
 def list_prompts(include_core: bool = True):
