@@ -82,11 +82,38 @@ def _extract_error_message(resp: httpx.Response) -> str:
     return str(data)[:500]
 
 
+def _is_credits_error(status: int, message: str) -> bool:
+    """True when the key is valid but the team is out of credits / spend limit."""
+    lower = (message or "").lower()
+    credit_tokens = (
+        "used all available credits",
+        "available credits",
+        "spending limit",
+        "monthly spending",
+        "purchase more credits",
+        "raise your spending limit",
+        "insufficient credits",
+        "out of credits",
+        "quota exceeded",
+        "billing",
+        "payment required",
+    )
+    if any(t in lower for t in credit_tokens):
+        return True
+    # Some gateways use 402 Payment Required
+    if status == 402:
+        return True
+    return False
+
+
 def _is_auth_error(status: int, message: str) -> bool:
-    """True when xAI rejected the API key (401/403, or 400 with key wording)."""
-    if status in (401, 403):
+    """True when xAI rejected the API key itself (not credits)."""
+    if _is_credits_error(status, message or ""):
+        return False
+    if status in (401,):
         return True
     lower = (message or "").lower()
+    # 403 is often credits or permission — only treat as bad key when wording says so
     auth_tokens = (
         "incorrect api key",
         "invalid api key",
@@ -94,18 +121,23 @@ def _is_auth_error(status: int, message: str) -> bool:
         "api key provided",
         "unauthorized",
         "authentication",
-        "permission denied",
         "not authorized",
-        "console.x.ai",
+        "invalid or unauthorized",
     )
-    return any(t in lower for t in auth_tokens)
+    if any(t in lower for t in auth_tokens):
+        return True
+    if status == 403 and "permission-denied" in lower and not _is_credits_error(403, lower):
+        # Generic 403 without credit language still often means key/team access
+        if "api key" in lower or "unauthorized" in lower:
+            return True
+    return False
 
 
 def _is_model_error(status: int, message: str) -> bool:
-    """True when the request failed because of the model id (not auth)."""
+    """True when the request failed because of the model id (not auth/credits)."""
     if status != 400:
         return False
-    if _is_auth_error(status, message):
+    if _is_auth_error(status, message) or _is_credits_error(status, message):
         return False
     lower = message.lower()
     # Avoid bare "invalid" — xAI uses code "invalid-argument" for many errors,
@@ -132,6 +164,17 @@ def _auth_error_message(detail: str = "") -> str:
         "(2) set XAI_API_KEY on Render / in backend/.env and redeploy/restart. "
         "Do not use placeholders like xai-REPLACE_... or sk_ keys. "
         "Free grok.com chat accounts do not work for the API."
+    )
+    if detail:
+        return f"{base} Details: {detail}"
+    return base
+
+
+def _credits_error_message(detail: str = "") -> str:
+    base = (
+        "xAI API key is valid, but your team is out of credits or hit its spending limit. "
+        "Open https://console.x.ai → Billing / Credits, purchase more credits or raise the monthly limit, "
+        "then try again. (This is not a bug in AETHER.)"
     )
     if detail:
         return f"{base} Details: {detail}"
@@ -252,7 +295,11 @@ async def call_grok(
             message = _extract_error_message(resp)
             last_error = f"HTTP {resp.status_code}: {message}"
 
-            # Auth failures: stop immediately (do not cycle models)
+            # Credits / spend limit: stop immediately (key is fine)
+            if _is_credits_error(resp.status_code, message):
+                raise ValueError(_credits_error_message(last_error))
+
+            # Bad key: stop immediately (do not cycle models)
             if _is_auth_error(resp.status_code, message):
                 raise ValueError(_auth_error_message(last_error))
 
