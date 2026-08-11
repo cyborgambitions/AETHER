@@ -1547,8 +1547,24 @@
     }
 
     function saveApiKey() {
-      const key = document.getElementById('key-input').value.trim();
+      let key = document.getElementById('key-input').value.trim();
+      // Strip accidental quotes / Bearer prefix from paste
+      if ((key.startsWith('"') && key.endsWith('"')) || (key.startsWith("'") && key.endsWith("'"))) {
+        key = key.slice(1, -1).trim();
+      }
+      if (key.toLowerCase().startsWith('bearer ')) key = key.slice(7).trim();
+      key = key.replace(/\r|\n/g, '').trim();
+
       if (key) {
+        const lower = key.toLowerCase();
+        if (!key.startsWith('xai-')) {
+          showToast('xAI keys must start with xai- (from console.x.ai).', true);
+          return;
+        }
+        if (/replace|your[_-]?key|paste|example|xxxx|dummy|changeme/.test(lower) || key.length < 20) {
+          showToast('That looks like a placeholder, not a real console key.', true);
+          return;
+        }
         localStorage.setItem('aether_xai_key', key);
         showToast('API key saved in this browser.');
       } else {

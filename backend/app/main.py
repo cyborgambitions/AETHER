@@ -27,7 +27,7 @@ from pydantic import BaseModel, Field
 import stripe
 from . import prompts as prompt_lib
 from . import database as db
-from .grok import call_grok, DEFAULT_MODEL
+from .grok import call_grok, DEFAULT_MODEL, sanitize_api_key
 
 # Stripe setup
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY", "")
@@ -150,9 +150,9 @@ async def generate(req: GenerateRequest):
     prompt_id = req.prompt_id
 
     # Determine which key to use
-    effective_api_key = req.api_key
+    effective_api_key = sanitize_api_key(req.api_key)
     if req.use_hosted:
-        server_key = os.getenv("XAI_API_KEY")
+        server_key = sanitize_api_key(os.getenv("XAI_API_KEY"))
         if server_key:
             effective_api_key = server_key
             prompt_title = (prompt_title or "Hosted Pro") + " (Server)"
@@ -180,11 +180,9 @@ async def generate(req: GenerateRequest):
     if not filled or not str(filled).strip():
         raise HTTPException(400, "Resolved prompt is empty. Provide input text and a mode.")
 
-    # Prefer client key, then server env; strip whitespace / accidental newlines from paste
-    if effective_api_key:
-        effective_api_key = effective_api_key.strip()
+    # Prefer client key, then server env; sanitize whitespace / quotes / Bearer prefix
     if not effective_api_key:
-        effective_api_key = (os.getenv("XAI_API_KEY") or "").strip() or None
+        effective_api_key = sanitize_api_key(os.getenv("XAI_API_KEY")) or None
 
     try:
         result = await call_grok(

@@ -5,16 +5,17 @@ Sends a minimal OpenAI-compatible payload: model + cleaned messages only.
 """
 
 import os
+import re
 import time
 import httpx
-from typing import Optional, Dict, Any, List, Union
+from typing import Optional, Dict, Any, List
 from dotenv import load_dotenv
 
 load_dotenv()
 
 XAI_BASE_URL = "https://api.x.ai/v1"
 
-# Prefer grok-4.5; fall back if a key cannot access it
+# Prefer grok-4.5; fall back if a key cannot access a given id
 DEFAULT_MODEL = os.getenv("DEFAULT_MODEL", "grok-4.5")
 
 MODEL_FALLBACKS: List[str] = [
@@ -23,6 +24,40 @@ MODEL_FALLBACKS: List[str] = [
     "grok-4.20-0309-non-reasoning",
     "grok-4.20-0309-reasoning",
 ]
+
+# Values that look like keys but are docs / templates — never send these
+_PLACEHOLDER_KEY_RE = re.compile(
+    r"(replace|your[_-]?key|paste|example|xxxx|sk_live_or_test|dummy|changeme|todo)",
+    re.IGNORECASE,
+)
+
+
+def sanitize_api_key(raw: Optional[str]) -> str:
+    """Strip quotes, Bearer prefix, and whitespace from a pasted/env key."""
+    if not raw:
+        return ""
+    key = str(raw).strip()
+    # BOM / zero-width / newlines from Windows paste / Out-File
+    key = key.lstrip("\ufeff").strip()
+    key = key.replace("\r", "").replace("\n", "").strip()
+    if (key.startswith('"') and key.endswith('"')) or (
+        key.startswith("'") and key.endswith("'")
+    ):
+        key = key[1:-1].strip()
+    if key.lower().startswith("bearer "):
+        key = key[7:].strip()
+    return key
+
+
+def _looks_like_placeholder_key(key: str) -> bool:
+    if not key:
+        return True
+    if _PLACEHOLDER_KEY_RE.search(key):
+        return True
+    # Real console keys are longer than short templates like xai-your-key-here
+    if key.startswith("xai-") and len(key) < 20:
+        return True
+    return False
 
 
 def _extract_error_message(resp: httpx.Response) -> str:
@@ -47,21 +82,60 @@ def _extract_error_message(resp: httpx.Response) -> str:
     return str(data)[:500]
 
 
+def _is_auth_error(status: int, message: str) -> bool:
+    """True when xAI rejected the API key (401/403, or 400 with key wording)."""
+    if status in (401, 403):
+        return True
+    lower = (message or "").lower()
+    auth_tokens = (
+        "incorrect api key",
+        "invalid api key",
+        "invalid_api_key",
+        "api key provided",
+        "unauthorized",
+        "authentication",
+        "permission denied",
+        "not authorized",
+        "console.x.ai",
+    )
+    return any(t in lower for t in auth_tokens)
+
+
 def _is_model_error(status: int, message: str) -> bool:
+    """True when the request failed because of the model id (not auth)."""
     if status != 400:
         return False
+    if _is_auth_error(status, message):
+        return False
     lower = message.lower()
+    # Avoid bare "invalid" — xAI uses code "invalid-argument" for many errors,
+    # including bad API keys, which must not trigger model fallbacks.
     return any(
         token in lower
         for token in (
-            "model",
+            "model not found",
+            "model_not_found",
             "does not exist",
-            "not found",
-            "invalid",
-            "unsupported",
-            "unknown",
+            "unknown model",
+            "unsupported model",
+            "invalid model",
+            "no such model",
         )
     )
+
+
+def _auth_error_message(detail: str = "") -> str:
+    base = (
+        "Invalid or unauthorized xAI API key. "
+        "Get a real key at https://console.x.ai (must start with 'xai-'), "
+        "then either: (1) click Connect Key in AETHER and paste it, or "
+        "(2) set XAI_API_KEY on Render / in backend/.env and redeploy/restart. "
+        "Do not use placeholders like xai-REPLACE_... or sk_ keys. "
+        "Free grok.com chat accounts do not work for the API."
+    )
+    if detail:
+        return f"{base} Details: {detail}"
+    return base
 
 
 def clean_messages(messages: List[Dict[str, Any]]) -> List[Dict[str, str]]:
@@ -107,11 +181,22 @@ async def call_grok(
 
     No max_tokens / temperature / stream — some Grok 4 endpoints 400 on extras.
     """
-    key = (api_key or os.getenv("XAI_API_KEY") or "").strip()
+    key = sanitize_api_key(api_key or os.getenv("XAI_API_KEY") or "")
     if not key:
         raise ValueError(
             "No xAI API key provided. Pass api_key or set XAI_API_KEY in environment. "
             "Get a key at https://console.x.ai"
+        )
+    if _looks_like_placeholder_key(key):
+        raise ValueError(
+            "XAI_API_KEY looks like a placeholder (e.g. xai-REPLACE_...), not a real console key. "
+            "Create a key at https://console.x.ai and set it on Render (Environment → XAI_API_KEY) "
+            "or paste it via Connect Key in the app."
+        )
+    if not key.startswith("xai-"):
+        raise ValueError(
+            "xAI API keys must start with 'xai-'. "
+            "OpenAI/Stripe keys (sk-...) will not work. Get a key at https://console.x.ai"
         )
 
     if messages is not None:
@@ -154,13 +239,6 @@ async def call_grok(
                 json=payload,
             )
 
-            if resp.status_code in (401, 403):
-                raise ValueError(
-                    "Invalid or unauthorized xAI API key (401/403). "
-                    "Get a key at https://console.x.ai, then click the key icon in AETHER and paste it. "
-                    "Keys must start with 'xai-'. Free grok.com chat accounts do not work for the API."
-                )
-
             if resp.status_code == 429:
                 raise ValueError(
                     "xAI rate limit hit (429). Wait a moment and try again, or check your credits at console.x.ai."
@@ -174,6 +252,11 @@ async def call_grok(
             message = _extract_error_message(resp)
             last_error = f"HTTP {resp.status_code}: {message}"
 
+            # Auth failures: stop immediately (do not cycle models)
+            if _is_auth_error(resp.status_code, message):
+                raise ValueError(_auth_error_message(last_error))
+
+            # Only retry other model ids on genuine model-name failures
             if _is_model_error(resp.status_code, message) and idx < len(candidates) - 1:
                 continue
 

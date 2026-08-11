@@ -1,6 +1,10 @@
-# How to Fix "403 Forbidden" / Get Grok Working in AETHER
+# How to Fix API Key Errors / Get Grok Working in AETHER
 
-The error `Client error '403 Forbidden'` means xAI rejected the API key.
+xAI rejected your API key. Common messages:
+
+- `Incorrect API key provided` (HTTP 400)
+- `403 Forbidden` / unauthorized
+- Misleading "model name" text that appears after the client retried fallbacks on a bad key
 
 ## Step 1: Get a Real xAI API Key
 
@@ -13,17 +17,28 @@ The error `Client error '403 Forbidden'` means xAI rejected the API key.
 - Keys from just using grok.com or the X app **do not work** for the API.
 - You may need to add a payment method or have credits in the console.
 
-## Step 2: Add the Key in AETHER (Easiest)
+## Step 2A: Fix Render (live site)
 
-1. Make sure your local server is running (`python -m uvicorn ...`)
-2. Open **http://localhost:8000**
-3. In the top right, click the **key icon** (next to "API Key")
-4. Paste your full `xai-...` key into the box
-5. Click **Save Key**
+If you see this on **https://aether-first-principles.onrender.com**:
+
+1. Open [Render Dashboard](https://dashboard.render.com) → service **aether-first-principles**
+2. **Environment** → set `XAI_API_KEY` to your real `xai-...` key (not `xai-REPLACE_...`)
+3. Optional: set `DEFAULT_MODEL` = `grok-4.5`
+4. **Manual Deploy** → **Deploy latest commit** (or Save Environment so it restarts)
+5. Wait until Live, then hard-refresh the site
+
+Or use **Connect Key** in the UI (browser-only; does not need Render env).
+
+## Step 2B: Add the Key in AETHER UI (Easiest for you)
+
+1. Open the live site or local server
+2. Click **Connect Key** / the key icon
+3. Paste your full `xai-...` key
+4. Click **Save Key**
 
 The key is stored only in your browser.
 
-Now click **RUN WITH GROK** again.
+Now click **GENERATE WITH GROK** again.
 
 ## Step 3: Alternative - Set Key on the Server (.env)
 
