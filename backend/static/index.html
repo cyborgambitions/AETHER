@@ -80,6 +80,26 @@
       font-synthesis: none;
     }
 
+    .planet-icon {
+      width: 3.5rem;
+      height: 3.5rem;
+      border-radius: 9999px;
+      overflow: hidden;
+      background: #000;
+      flex-shrink: 0;
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.12), 0 0 18px rgba(138, 212, 255, 0.12);
+    }
+    .planet-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    .planet-icon.sm {
+      width: 2.5rem;
+      height: 2.5rem;
+    }
+
     .mode-title {
       font-family: 'Satoshi', 'Source Sans 3', system-ui, sans-serif;
       font-weight: 500;
@@ -428,7 +448,7 @@
       <div class="bg-[#060a12]/85 rounded-[22px] p-7">
         <div id="selected-mode-header" class="mb-4">
           <div class="flex items-center gap-3">
-            <div id="selected-icon" class="w-8 h-8 flex-shrink-0"></div>
+            <div id="selected-icon" class="planet-icon sm"></div>
             <div>
               <div id="selected-title" class="mode-title text-2xl">Choose a mode</div>
               <div id="selected-desc" class="text-sm text-white/50"></div>
@@ -752,13 +772,20 @@
 
     // Core Prompts Data (matches backend)
     const CORE_MODES = [
-      { id: "first-principles-deconstructor", title: "First Principles Deconstructor", icon: "fa-atom", category: "core", desc: "Strip any concept to its unbreakable fundamentals.", placeholder: "e.g. Why is AI alignment so difficult?" },
-      { id: "cosmic-hypothesis-generator", title: "Cosmic Hypothesis Generator", icon: "fa-lightbulb", category: "discovery", desc: "Invent bold, falsifiable ideas across domains.", placeholder: "e.g. Origin of life" },
-      { id: "truth-audit-engine", title: "Truth Audit Engine", icon: "fa-shield-halved", category: "audit", desc: "Maximum truth-seeking audit of any claim.", placeholder: "Paste a claim here" },
-      { id: "civilizational-consequence-mapper", title: "Civilizational Consequence Mapper", icon: "fa-globe", category: "longterm", desc: "Map 2nd–4th order effects over 50–100 years.", placeholder: "e.g. CRISPR gene editing" },
-      { id: "interdisciplinary-synthesizer", title: "Interdisciplinary Synthesizer", icon: "fa-link", category: "connection", desc: "Find hidden structural bridges between fields.", placeholder: "Field A and Field B" },
-      { id: "question-quality-amplifier", title: "Question Quality Amplifier", icon: "fa-magnifying-glass", category: "meta", desc: "Transform weak questions into profound ones.", placeholder: "Your current question" }
+      { id: "first-principles-deconstructor", title: "First Principles Deconstructor", planet: "/static/assets/planets/earth.jpg", planetAlt: "Earth", category: "core", desc: "Strip any concept to its unbreakable fundamentals.", placeholder: "e.g. Why is AI alignment so difficult?" },
+      { id: "cosmic-hypothesis-generator", title: "Cosmic Hypothesis Generator", planet: "/static/assets/planets/jupiter.jpg", planetAlt: "Jupiter", category: "discovery", desc: "Invent bold, falsifiable ideas across domains.", placeholder: "e.g. Origin of life" },
+      { id: "truth-audit-engine", title: "Truth Audit Engine", planet: "/static/assets/planets/moon.jpg", planetAlt: "Moon", category: "audit", desc: "Maximum truth-seeking audit of any claim.", placeholder: "Paste a claim here" },
+      { id: "civilizational-consequence-mapper", title: "Civilizational Consequence Mapper", planet: "/static/assets/planets/mars.jpg", planetAlt: "Mars", category: "longterm", desc: "Map 2nd–4th order effects over 50–100 years.", placeholder: "e.g. CRISPR gene editing" },
+      { id: "interdisciplinary-synthesizer", title: "Interdisciplinary Synthesizer", planet: "/static/assets/planets/saturn.jpg", planetAlt: "Saturn", category: "connection", desc: "Find hidden structural bridges between fields.", placeholder: "Field A and Field B" },
+      { id: "question-quality-amplifier", title: "Question Quality Amplifier", planet: "/static/assets/planets/neptune.jpg", planetAlt: "Neptune", category: "meta", desc: "Transform weak questions into profound ones.", placeholder: "Your current question" }
     ];
+
+    function planetImg(mode, extraClass = '') {
+      if (mode.planet) {
+        return `<div class="planet-icon ${extraClass}"><img src="${mode.planet}" alt="${mode.planetAlt || ''}"></div>`;
+      }
+      return `<div class="planet-icon ${extraClass} flex items-center justify-center text-[#67f6ff]"><i class="fa-solid ${mode.icon || 'fa-globe'}"></i></div>`;
+    }
 
     let currentMode = null;
     let currentResult = null;
@@ -773,9 +800,7 @@
         el.className = `holo-card mode-card rounded-3xl p-6 cursor-pointer group`;
         el.innerHTML = `
           <div class="flex gap-4">
-            <div class="w-12 h-12 flex-shrink-0 rounded-2xl bg-white/5 flex items-center justify-center text-3xl text-[#67f6ff]">
-              <i class="fa-solid ${mode.icon}"></i>
-            </div>
+            ${planetImg(mode)}
             <div>
               <div class="mode-title text-xl leading-tight">${mode.title}</div>
               <div class="text-sm mt-3 text-white/60 leading-snug">${mode.desc}</div>
@@ -804,7 +829,11 @@
       document.getElementById('placeholder-hint').innerHTML = mode.placeholder;
       
       const iconContainer = document.getElementById('selected-icon');
-      iconContainer.innerHTML = `<i class="fa-solid ${mode.icon} text-3xl text-[#67f6ff]"></i>`;
+      if (mode.planet) {
+        iconContainer.innerHTML = `<img src="${mode.planet}" alt="${mode.planetAlt || ''}">`;
+      } else {
+        iconContainer.innerHTML = `<i class="fa-solid ${mode.icon || 'fa-globe'} text-[#67f6ff]"></i>`;
+      }
 
       highlightModeCard(mode.id);
 
