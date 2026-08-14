@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Buda:wght@300&family=Instrument+Serif:ital@0;1&family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Buda:wght@300&family=Cormorant+SC:wght@700&family=Instrument+Serif:ital@0;1&family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #02040a;
@@ -76,6 +76,13 @@
       font-family: 'Instrument Serif', 'Palatino Linotype', Palatino, Georgia, serif;
       font-weight: 400;
       letter-spacing: -0.015em;
+      font-synthesis: none;
+    }
+
+    .mode-title {
+      font-family: 'Cormorant SC', 'Palatino Linotype', Palatino, serif;
+      font-weight: 700;
+      letter-spacing: 0.02em;
       font-synthesis: none;
     }
 
@@ -422,7 +429,7 @@
           <div class="flex items-center gap-3">
             <div id="selected-icon" class="w-8 h-8 flex-shrink-0"></div>
             <div>
-              <div id="selected-title" class="font-semibold text-2xl">Choose a mode</div>
+              <div id="selected-title" class="mode-title text-2xl">Choose a mode</div>
               <div id="selected-desc" class="text-sm text-white/50"></div>
             </div>
           </div>
@@ -769,7 +776,7 @@
               <i class="fa-solid ${mode.icon}"></i>
             </div>
             <div>
-              <div class="font-semibold text-xl leading-tight tracking-tight">${mode.title}</div>
+              <div class="mode-title text-xl leading-tight">${mode.title}</div>
               <div class="text-sm mt-3 text-white/60 leading-snug">${mode.desc}</div>
               <div class="mt-5 text-xs text-[#67f6ff]/70 group-hover:text-[#67f6ff] flex items-center gap-1">
                 Use this mode <i class="fa-solid fa-arrow-right text-xs ml-0.5"></i>
