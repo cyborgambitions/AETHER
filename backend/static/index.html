@@ -81,23 +81,24 @@
     }
 
     .planet-icon {
-      width: 3.5rem;
-      height: 3.5rem;
+      width: 4.25rem;
+      height: 4.25rem;
       border-radius: 9999px;
       overflow: hidden;
       background: #000;
       flex-shrink: 0;
-      box-shadow: 0 0 0 1px rgba(255,255,255,0.12), 0 0 18px rgba(138, 212, 255, 0.12);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.14), 0 0 22px rgba(138, 212, 255, 0.16);
     }
     .planet-icon img {
       width: 100%;
       height: 100%;
-      object-fit: contain;
+      object-fit: cover;
       display: block;
     }
+    .planet-icon.rings img { object-fit: contain; }
     .planet-icon.sm {
-      width: 2.5rem;
-      height: 2.5rem;
+      width: 2.75rem;
+      height: 2.75rem;
     }
 
     .mode-title {
@@ -534,17 +535,17 @@
     
     <div class="grid md:grid-cols-3 gap-4 max-w-5xl mx-auto">
       <div class="holo-card rounded-3xl p-8">
-        <div class="text-[#67f6ff] mb-3"><i class="fa-solid fa-atom fa-2x"></i></div>
+        <div class="planet-icon mb-3"><img src="/static/assets/planets/earth.jpg?v=12" alt="Earth"></div>
         <div class="font-semibold text-2xl mb-2">Deconstruct</div>
         <div class="text-white/60">Strip any idea down to its irreducible truths using physics, logic, and human nature.</div>
       </div>
       <div class="holo-card rounded-3xl p-8">
-        <div class="text-[#67f6ff] mb-3"><i class="fa-solid fa-lightbulb fa-2x"></i></div>
+        <div class="planet-icon mb-3"><img src="/static/assets/planets/jupiter.jpg?v=12" alt="Jupiter"></div>
         <div class="font-semibold text-2xl mb-2">Generate</div>
         <div class="text-white/60">Produce novel, testable hypotheses that bridge disconnected domains of knowledge.</div>
       </div>
       <div class="holo-card rounded-3xl p-8">
-        <div class="text-[#67f6ff] mb-3"><i class="fa-solid fa-shield-halved fa-2x"></i></div>
+        <div class="planet-icon mb-3"><img src="/static/assets/planets/moon.jpg?v=12" alt="Moon"></div>
         <div class="font-semibold text-2xl mb-2">Audit</div>
         <div class="text-white/60">Ruthlessly evaluate claims with evidence scoring and bias detection.</div>
       </div>
@@ -655,7 +656,7 @@
         <a href="https://console.x.ai" class="hover:text-[#67f6ff] transition" target="_blank">xAI Console</a>
         <a href="https://github.com/cyborgambitions/AETHER" class="hover:text-[#67f6ff] transition" target="_blank">GitHub</a>
       </div>
-      <div class="text-xs text-white/30">Built for truth-seekers · Powered by SpaceXAI</div>
+      <div class="text-xs text-white/30">Built for truth-seekers · Powered by SpaceXAI · planets v12</div>
     </div>
   </footer>
 
@@ -772,17 +773,17 @@
 
     // Core Prompts Data (matches backend)
     const CORE_MODES = [
-      { id: "first-principles-deconstructor", title: "First Principles Deconstructor", planet: "/static/assets/planets/earth.jpg", planetAlt: "Earth", category: "core", desc: "Strip any concept to its unbreakable fundamentals.", placeholder: "e.g. Why is AI alignment so difficult?" },
-      { id: "cosmic-hypothesis-generator", title: "Cosmic Hypothesis Generator", planet: "/static/assets/planets/jupiter.jpg", planetAlt: "Jupiter", category: "discovery", desc: "Invent bold, falsifiable ideas across domains.", placeholder: "e.g. Origin of life" },
-      { id: "truth-audit-engine", title: "Truth Audit Engine", planet: "/static/assets/planets/moon.jpg", planetAlt: "Moon", category: "audit", desc: "Maximum truth-seeking audit of any claim.", placeholder: "Paste a claim here" },
-      { id: "civilizational-consequence-mapper", title: "Civilizational Consequence Mapper", planet: "/static/assets/planets/mars.jpg", planetAlt: "Mars", category: "longterm", desc: "Map 2nd–4th order effects over 50–100 years.", placeholder: "e.g. CRISPR gene editing" },
-      { id: "interdisciplinary-synthesizer", title: "Interdisciplinary Synthesizer", planet: "/static/assets/planets/saturn.jpg", planetAlt: "Saturn", category: "connection", desc: "Find hidden structural bridges between fields.", placeholder: "Field A and Field B" },
-      { id: "question-quality-amplifier", title: "Question Quality Amplifier", planet: "/static/assets/planets/neptune.jpg", planetAlt: "Neptune", category: "meta", desc: "Transform weak questions into profound ones.", placeholder: "Your current question" }
+      { id: "first-principles-deconstructor", title: "First Principles Deconstructor", planet: "/static/assets/planets/earth.jpg?v=12", planetAlt: "Earth", category: "core", desc: "Strip any concept to its unbreakable fundamentals.", placeholder: "e.g. Why is AI alignment so difficult?" },
+      { id: "cosmic-hypothesis-generator", title: "Cosmic Hypothesis Generator", planet: "/static/assets/planets/jupiter.jpg?v=12", planetAlt: "Jupiter", category: "discovery", desc: "Invent bold, falsifiable ideas across domains.", placeholder: "e.g. Origin of life" },
+      { id: "truth-audit-engine", title: "Truth Audit Engine", planet: "/static/assets/planets/moon.jpg?v=12", planetAlt: "Moon", category: "audit", desc: "Maximum truth-seeking audit of any claim.", placeholder: "Paste a claim here" },
+      { id: "civilizational-consequence-mapper", title: "Civilizational Consequence Mapper", planet: "/static/assets/planets/mars.jpg?v=12", planetAlt: "Mars", category: "longterm", desc: "Map 2nd–4th order effects over 50–100 years.", placeholder: "e.g. CRISPR gene editing" },
+      { id: "interdisciplinary-synthesizer", title: "Interdisciplinary Synthesizer", planet: "/static/assets/planets/saturn.jpg?v=12", planetAlt: "Saturn", planetClass: "rings", category: "connection", desc: "Find hidden structural bridges between fields.", placeholder: "Field A and Field B" },
+      { id: "question-quality-amplifier", title: "Question Quality Amplifier", planet: "/static/assets/planets/neptune.jpg?v=12", planetAlt: "Neptune", category: "meta", desc: "Transform weak questions into profound ones.", placeholder: "Your current question" }
     ];
 
     function planetImg(mode, extraClass = '') {
       if (mode.planet) {
-        return `<div class="planet-icon ${extraClass}"><img src="${mode.planet}" alt="${mode.planetAlt || ''}"></div>`;
+        return `<div class="planet-icon ${mode.planetClass || ''} ${extraClass}"><img src="${mode.planet}" alt="${mode.planetAlt || ''}"></div>`;
       }
       return `<div class="planet-icon ${extraClass} flex items-center justify-center text-[#67f6ff]"><i class="fa-solid ${mode.icon || 'fa-globe'}"></i></div>`;
     }

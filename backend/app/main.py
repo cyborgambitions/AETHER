@@ -303,6 +303,15 @@ NO_CACHE = {
     "Expires": "0",
 }
 
+@app.middleware("http")
+async def disable_html_cache(request, call_next):
+    response = await call_next(request)
+    path = request.url.path
+    if path == "/" or path.endswith(".html"):
+        response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+        response.headers["Pragma"] = "no-cache"
+    return response
+
 @app.get("/", response_class=HTMLResponse)
 def index():
     index_file = static_dir / "index.html"
