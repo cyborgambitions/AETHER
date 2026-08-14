@@ -1,0 +1,21 @@
+{
+  "name": "AETHER",
+  "short_name": "AETHER",
+  "description": "First principles toolkit — space carnival of truth-seeking.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#05050f",
+  "theme_color": "#05050f",
+  "icons": [
+    {
+      "src": "/static/favicon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/favicon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
