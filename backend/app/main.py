@@ -297,11 +297,20 @@ def get_usage():
 
 # ------------- Frontend (served at root) -------------
 
+NO_CACHE = {
+    "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+    "Pragma": "no-cache",
+    "Expires": "0",
+}
+
 @app.get("/", response_class=HTMLResponse)
 def index():
     index_file = static_dir / "index.html"
     if index_file.exists():
-        return index_file.read_text(encoding="utf-8")
+        return HTMLResponse(
+            content=index_file.read_text(encoding="utf-8"),
+            headers=NO_CACHE,
+        )
     return """
     <html><head><title>AETHER</title></head><body>
     <h1>AETHER Backend is running.</h1>
