@@ -163,26 +163,36 @@
         radial-gradient(ellipse at 20% 80%, rgba(8, 18, 36, 0.35), transparent 50%);
     }
 
-    .holo-card.nlc-card,
     .nlc-card {
       position: relative;
       overflow: hidden;
-      background-color: #02040a;
-      background-size: cover;
-      background-position: center;
-      min-height: 220px;
+      min-height: 240px;
+      background: #02040a !important;
+      border: 1px solid rgba(103, 246, 255, 0.15);
+      transition: transform 0.3s, border-color 0.3s;
     }
-    .nlc-card::after {
-      content: '';
+    .nlc-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(103, 246, 255, 0.4);
+    }
+    .nlc-card img.nlc-photo {
       position: absolute;
       inset: 0;
-      background: linear-gradient(180deg, rgba(2,4,10,0.28) 0%, rgba(2,4,10,0.72) 55%, rgba(2,4,10,0.88) 100%);
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .nlc-card .nlc-veil {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(2,4,10,0.12) 0%, rgba(2,4,10,0.45) 50%, rgba(2,4,10,0.78) 100%);
       pointer-events: none;
     }
-    .nlc-card > * { position: relative; z-index: 1; }
-    .nlc-deconstruct { background-image: url('/static/assets/nlc/deconstruct.jpg?v=14'); }
-    .nlc-generate { background-image: url('/static/assets/nlc/generate.jpg?v=14'); }
-    .nlc-audit { background-image: url('/static/assets/nlc/audit.jpg?v=14'); }
+    .nlc-card .nlc-copy {
+      position: relative;
+      z-index: 1;
+    }
 
     .glass {
       background: rgba(6, 10, 18, 0.72);
@@ -555,17 +565,29 @@
     </div>
     
     <div class="grid md:grid-cols-3 gap-4 max-w-5xl mx-auto">
-      <div class="holo-card nlc-card nlc-deconstruct rounded-3xl p-8">
-        <div class="mode-title text-2xl mb-2">Deconstruct</div>
-        <div class="text-white/80">Strip any idea down to its irreducible truths using physics, logic, and human nature.</div>
+      <div class="nlc-card rounded-3xl p-8">
+        <img class="nlc-photo" src="/static/assets/nlc/deconstruct.jpg?v=15" alt="Noctilucent clouds">
+        <div class="nlc-veil"></div>
+        <div class="nlc-copy">
+          <div class="mode-title text-2xl mb-2">Deconstruct</div>
+          <div class="text-white/85">Strip any idea down to its irreducible truths using physics, logic, and human nature.</div>
+        </div>
       </div>
-      <div class="holo-card nlc-card nlc-generate rounded-3xl p-8">
-        <div class="mode-title text-2xl mb-2">Generate</div>
-        <div class="text-white/80">Produce novel, testable hypotheses that bridge disconnected domains of knowledge.</div>
+      <div class="nlc-card rounded-3xl p-8">
+        <img class="nlc-photo" src="/static/assets/nlc/generate.jpg?v=15" alt="Noctilucent clouds">
+        <div class="nlc-veil"></div>
+        <div class="nlc-copy">
+          <div class="mode-title text-2xl mb-2">Generate</div>
+          <div class="text-white/85">Produce novel, testable hypotheses that bridge disconnected domains of knowledge.</div>
+        </div>
       </div>
-      <div class="holo-card nlc-card nlc-audit rounded-3xl p-8">
-        <div class="mode-title text-2xl mb-2">Audit</div>
-        <div class="text-white/80">Ruthlessly evaluate claims with evidence scoring and bias detection.</div>
+      <div class="nlc-card rounded-3xl p-8">
+        <img class="nlc-photo" src="/static/assets/nlc/audit.jpg?v=15" alt="Noctilucent clouds">
+        <div class="nlc-veil"></div>
+        <div class="nlc-copy">
+          <div class="mode-title text-2xl mb-2">Audit</div>
+          <div class="text-white/85">Ruthlessly evaluate claims with evidence scoring and bias detection.</div>
+        </div>
       </div>
     </div>
   </div>
