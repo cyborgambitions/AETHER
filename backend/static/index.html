@@ -415,109 +415,81 @@
   <!-- Workspace -->
   <div id="workspace" class="max-w-screen-2xl mx-auto px-6 pb-20 relative z-10">
     <div class="glass rounded-3xl border border-white/10 p-1.5 cosmic-glow">
-      <div class="grid grid-cols-1 lg:grid-cols-5 gap-1.5">
-        
-        <!-- Sidebar: Modes + Settings -->
-        <div class="lg:col-span-2 bg-[#050810]/85 rounded-[22px] p-6 flex flex-col">
-          <div class="flex justify-between items-center mb-5 px-1">
-            <div class="font-semibold text-lg">Select Mode</div>
-            <div class="text-xs px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[#67f6ff]">6 MODES</div>
+      <div class="bg-[#060a12]/85 rounded-[22px] p-7">
+        <div id="selected-mode-header" class="mb-4">
+          <div class="flex items-center gap-3">
+            <div id="selected-icon" class="w-8 h-8 flex-shrink-0"></div>
+            <div>
+              <div id="selected-title" class="font-semibold text-2xl">Choose a mode</div>
+              <div id="selected-desc" class="text-sm text-white/50"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <div>
+            <label for="input-text" class="flex items-center justify-between mb-2 text-xs uppercase tracking-widest text-white/50 cursor-pointer">
+              <div>INPUT</div>
+              <div id="placeholder-hint" class="normal-case font-normal text-white/30"></div>
+            </label>
+            <textarea id="input-text" rows="5" 
+                      class="w-full bg-[#05050f] border border-white/10 focus:border-[#67f6ff]/70 rounded-2xl p-5 text-base placeholder:text-white/30 resize-y min-h-[120px]"
+                      placeholder="Enter your topic, claim, question, or fields to connect..."></textarea>
+          </div>
+
+          <div class="flex flex-col sm:flex-row sm:items-end gap-4">
+            <div class="flex-1 min-w-[180px]">
+              <label for="temperature" class="flex justify-between text-xs mb-1.5 cursor-pointer text-white/50">
+                <span>Creativity</span>
+                <span id="temp-value" class="font-mono text-[#67f6ff]">0.7</span>
+              </label>
+              <input type="range" id="temperature" min="0" max="1.2" step="0.05" value="0.7" 
+                     class="w-full accent-[#67f6ff]" oninput="updateTempValue(this.value)">
+            </div>
+            <label for="use-hosted" class="flex items-center gap-2 cursor-pointer text-sm pb-1">
+              <input type="checkbox" id="use-hosted" class="accent-[#67f6ff]" onchange="updateHostedStatus()">
+              <span>Use Hosted (Pro)</span>
+              <span id="hosted-badge" class="text-[10px] px-2.5 py-px rounded bg-[#8ad4ff]/10 text-[#8ad4ff] hidden">PRO</span>
+            </label>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <button onclick="runGenerate()" 
+                    class="flex-1 h-14 bg-white text-[#02040a] font-semibold rounded-2xl flex items-center justify-center gap-3 active:scale-[0.985] text-[15px] transition hover:bg-[#dce8f2]">
+              <span id="generate-text">GENERATE WITH SPACEXAI</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
+            
+            <button onclick="clearWorkspace()" 
+                    class="h-14 px-6 rounded-2xl border border-white/10 hover:bg-white/5 text-sm">
+              Clear
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="output-panel" class="hidden mt-1.5 bg-[#060a12]/90 rounded-[22px] p-6 border border-white/10">
+        <div class="flex justify-between items-center mb-3 px-1">
+          <div class="flex items-center gap-3">
+            <div class="font-semibold text-sm tracking-widest">OUTPUT • FIRST PRINCIPLES</div>
+            <div id="output-meta" class="text-xs px-3 py-0.5 bg-white/5 rounded-full font-mono text-[#67f6ff]"></div>
           </div>
           
-          <div class="space-y-2 mb-auto" id="workspace-modes">
-            <!-- JS injected compact modes -->
-          </div>
-
-          <div class="mt-auto pt-6 border-t border-white/10">
-            <div class="text-xs text-white/50 mb-3 px-1">GENERATION SETTINGS</div>
-            
-            <div class="space-y-4">
-              <div>
-                <label for="temperature" class="flex justify-between text-xs mb-1.5 px-0.5 cursor-pointer">
-                  <span>Creativity</span>
-                  <span id="temp-value" class="font-mono text-[#67f6ff]">0.7</span>
-                </label>
-                <input type="range" id="temperature" min="0" max="1.2" step="0.05" value="0.7" 
-                       class="w-full accent-[#67f6ff]" oninput="updateTempValue(this.value)">
-              </div>
-              
-              <div class="flex items-center justify-between text-sm">
-                <div>
-                  <label for="use-hosted" class="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" id="use-hosted" class="accent-[#67f6ff]" onchange="updateHostedStatus()">
-                    <span class="text-sm">Use Hosted (Pro)</span>
-                  </label>
-                </div>
-                <div id="hosted-badge" class="text-[10px] px-2.5 py-px rounded bg-[#8ad4ff]/10 text-[#8ad4ff] hidden">PRO</div>
-              </div>
-            </div>
+          <div class="flex gap-2">
+            <button onclick="copyOutput()" class="text-xs px-4 h-9 rounded-2xl border border-white/10 flex items-center gap-2 hover:bg-white/5">
+              <i class="fa-regular fa-copy"></i> <span>COPY</span>
+            </button>
+            <button onclick="chainOutput()" class="text-xs px-4 h-9 rounded-2xl border border-white/10 flex items-center gap-2 hover:bg-white/5">
+              <i class="fa-solid fa-link"></i> <span>CHAIN</span>
+            </button>
+            <button onclick="saveToHistory()" class="text-xs px-4 h-9 rounded-2xl border border-white/10 flex items-center gap-2 hover:bg-white/5">
+              <i class="fa-solid fa-bookmark"></i>
+            </button>
           </div>
         </div>
-
-        <!-- Main Input -->
-        <div class="lg:col-span-3 bg-[#060a12]/85 rounded-[22px] p-7">
-          <div id="selected-mode-header" class="mb-4">
-            <div class="flex items-center gap-3">
-              <div id="selected-icon" class="w-8 h-8 flex-shrink-0"></div>
-              <div>
-                <div id="selected-title" class="font-semibold text-2xl">Choose a mode</div>
-                <div id="selected-desc" class="text-sm text-white/50"></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="space-y-4">
-            <div>
-              <label for="input-text" class="flex items-center justify-between mb-2 text-xs uppercase tracking-widest text-white/50 cursor-pointer">
-                <div>INPUT</div>
-                <div id="placeholder-hint" class="normal-case font-normal text-white/30"></div>
-              </label>
-              <textarea id="input-text" rows="5" 
-                        class="w-full bg-[#05050f] border border-white/10 focus:border-[#67f6ff]/70 rounded-2xl p-5 text-base placeholder:text-white/30 resize-y min-h-[120px]"
-                        placeholder="Enter your topic, claim, question, or fields to connect..."></textarea>
-            </div>
-
-            <div class="flex items-center gap-3">
-              <button onclick="runGenerate()" 
-                      class="flex-1 h-14 bg-white text-[#02040a] font-semibold rounded-2xl flex items-center justify-center gap-3 active:scale-[0.985] text-[15px] transition hover:bg-[#dce8f2]">
-                <span id="generate-text">GENERATE WITH SPACEXAI</span>
-                <i class="fa-solid fa-arrow-right"></i>
-              </button>
-              
-              <button onclick="clearWorkspace()" 
-                      class="h-14 px-6 rounded-2xl border border-white/10 hover:bg-white/5 text-sm">
-                Clear
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Output -->
-        <div class="lg:col-span-5 mt-1.5">
-          <div id="output-panel" class="hidden bg-[#060a12]/90 rounded-[22px] p-6 border border-white/10">
-            <div class="flex justify-between items-center mb-3 px-1">
-              <div class="flex items-center gap-3">
-                <div class="font-semibold text-sm tracking-widest">OUTPUT • FIRST PRINCIPLES</div>
-                <div id="output-meta" class="text-xs px-3 py-0.5 bg-white/5 rounded-full font-mono text-[#67f6ff]"></div>
-              </div>
-              
-              <div class="flex gap-2">
-                <button onclick="copyOutput()" class="text-xs px-4 h-9 rounded-2xl border border-white/10 flex items-center gap-2 hover:bg-white/5">
-                  <i class="fa-regular fa-copy"></i> <span>COPY</span>
-                </button>
-                <button onclick="chainOutput()" class="text-xs px-4 h-9 rounded-2xl border border-white/10 flex items-center gap-2 hover:bg-white/5">
-                  <i class="fa-solid fa-link"></i> <span>CHAIN</span>
-                </button>
-                <button onclick="saveToHistory()" class="text-xs px-4 h-9 rounded-2xl border border-white/10 flex items-center gap-2 hover:bg-white/5">
-                  <i class="fa-solid fa-bookmark"></i>
-                </button>
-              </div>
-            </div>
-            
-            <div id="output-content" 
-                 class="result-panel scanline bg-[#05050f] border border-white/5 rounded-2xl p-7 text-[15px] leading-relaxed max-h-[460px] overflow-auto text-white/90">
-            </div>
-          </div>
+        
+        <div id="output-content" 
+             class="result-panel scanline bg-[#05050f] border border-white/5 rounded-2xl p-7 text-[15px] leading-relaxed max-h-[460px] overflow-auto text-white/90">
         </div>
       </div>
     </div>
@@ -787,6 +759,7 @@
       
       CORE_MODES.forEach(mode => {
         const el = document.createElement('div');
+        el.dataset.modeId = mode.id;
         el.className = `holo-card mode-card rounded-3xl p-6 cursor-pointer group`;
         el.innerHTML = `
           <div class="flex gap-4">
@@ -807,45 +780,30 @@
       });
     }
 
-    function selectMode(mode) {
+    function highlightModeCard(modeId) {
+      document.querySelectorAll('#mode-grid .mode-card').forEach(card => {
+        card.classList.toggle('active', card.dataset.modeId === modeId);
+      });
+    }
+
+    function selectMode(mode, opts = {}) {
       currentMode = mode;
       
-      // Update workspace header
       document.getElementById('selected-title').innerHTML = mode.title;
       document.getElementById('selected-desc').innerHTML = mode.desc;
       document.getElementById('placeholder-hint').innerHTML = mode.placeholder;
       
       const iconContainer = document.getElementById('selected-icon');
       iconContainer.innerHTML = `<i class="fa-solid ${mode.icon} text-3xl text-[#67f6ff]"></i>`;
-      
-      // Scroll to workspace
-      document.getElementById('workspace').scrollIntoView({ behavior: 'smooth', block: 'start' });
-      
-      // Focus input
-      setTimeout(() => {
-        document.getElementById('input-text').focus();
-      }, 650);
-    }
 
-    function renderWorkspaceModes() {
-      const container = document.getElementById('workspace-modes');
-      container.innerHTML = '';
-      
-      CORE_MODES.forEach(mode => {
-        const el = document.createElement('div');
-        el.className = `flex items-center gap-3 px-4 py-3 rounded-2xl cursor-pointer hover:bg-white/5 text-sm border border-transparent`;
-        el.innerHTML = `
-          <div class="text-[#67f6ff] w-5"><i class="fa-solid ${mode.icon}"></i></div>
-          <div class="flex-1 font-medium">${mode.title}</div>
-        `;
-        el.onclick = () => {
-          selectMode(mode);
-          // highlight active
-          document.querySelectorAll('#workspace-modes > div').forEach(d => d.classList.remove('!border-[#67f6ff]/40'));
-          el.classList.add('!border-[#67f6ff]/40');
-        };
-        container.appendChild(el);
-      });
+      highlightModeCard(mode.id);
+
+      if (opts.scroll !== false) {
+        document.getElementById('workspace').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setTimeout(() => {
+          document.getElementById('input-text').focus();
+        }, 650);
+      }
     }
 
     function updateTempValue(val) {
@@ -1253,12 +1211,7 @@
 
     function initWorkspace() {
       renderModeGrid();
-      renderWorkspaceModes();
-      
-      // Set initial mode
-      setTimeout(() => {
-        selectMode(CORE_MODES[0]);
-      }, 800);
+      selectMode(CORE_MODES[0], { scroll: false });
 
       // Default temperature
       const tempSlider = document.getElementById('temperature');
