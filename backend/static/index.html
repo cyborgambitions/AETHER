@@ -23,8 +23,9 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Buda:wght@300&family=Instrument+Serif:ital@0;1&family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@500&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #02040a;
@@ -34,7 +35,7 @@
     }
     
     body {
-      font-family: 'Source Sans 3', 'Segoe UI', system-ui, sans-serif;
+      font-family: 'Satoshi', system-ui, sans-serif;
       background: #02040a;
       -webkit-font-smoothing: antialiased;
       font-feature-settings: "kern" 1, "liga" 1;
@@ -102,16 +103,16 @@
     }
 
     .mode-title {
-      font-family: 'Satoshi', 'Source Sans 3', system-ui, sans-serif;
+      font-family: 'Satoshi', system-ui, sans-serif;
       font-weight: 500;
       letter-spacing: -0.015em;
       font-synthesis: none;
     }
 
     .hero-title {
-      font-family: 'Buda', 'Instrument Serif', Georgia, serif;
-      font-weight: 300;
-      letter-spacing: 0.01em;
+      font-family: 'Instrument Serif', 'Palatino Linotype', Palatino, Georgia, serif;
+      font-weight: 400;
+      letter-spacing: -0.015em;
       font-synthesis: none;
     }
 
@@ -289,7 +290,7 @@
     }
 
     .result-panel {
-      font-family: 'Source Sans 3', 'Segoe UI', system-ui, sans-serif;
+      font-family: 'Satoshi', system-ui, sans-serif;
       line-height: 1.75;
       font-size: 1.02rem;
     }
@@ -424,7 +425,7 @@
 
       <h1 class="hero-title text-5xl sm:text-7xl md:text-[96px] leading-[1.08] mb-6">
         The universe<br>
-        <span class="futuristic-text">doesn't explain itself.</span>
+        <span class="futuristic-text italic">doesn't explain itself.</span>
       </h1>
       
       <p class="max-w-xl mx-auto text-lg sm:text-xl text-white/70 mb-9 leading-relaxed">
