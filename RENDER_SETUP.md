@@ -124,7 +124,8 @@ FRONTEND_URL=https://YOUR-SERVICE.onrender.com
    - `STRIPE_SECRET_KEY`
    - `STRIPE_PUBLISHABLE_KEY`
    - `STRIPE_PRO_PRICE_ID`
-4. Redeploy. Without Stripe, “Upgrade to Pro” unlocks demo mode in the browser.
+4. Set `FRONTEND_URL` to `https://aether-first-principles.onrender.com`  
+5. Redeploy. Upgrade to Pro opens Stripe Checkout. Pro unlocks only after `/api/billing/verify` confirms the session paid. Hosted runs then send that session id. Without Stripe env vars, the button does **not** fake-unlock.
 
 ---
 

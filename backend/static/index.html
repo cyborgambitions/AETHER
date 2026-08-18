@@ -624,7 +624,7 @@
         <a href="https://console.x.ai" class="hover:text-[#67f6ff] transition" target="_blank">xAI Console</a>
         <a href="https://github.com/cyborgambitions/AETHER" class="hover:text-[#67f6ff] transition" target="_blank">GitHub</a>
       </div>
-      <div class="text-xs text-white/30">Built for truth-seekers · Powered by SpaceXAI · nlc v19</div>
+      <div class="text-xs text-white/30">Built for truth-seekers · Powered by SpaceXAI · nlc v20</div>
     </div>
   </footer>
 
@@ -873,7 +873,8 @@
         use_hosted: useHosted,
         temperature: temp,
         // Omit model so server DEFAULT_MODEL (grok-4.3+) is used
-        prompt_id: currentMode.id
+        prompt_id: currentMode.id,
+        checkout_session_id: localStorage.getItem('aether_checkout_session') || undefined
       };
 
       if (!useHosted && apiKey) {
@@ -1177,7 +1178,7 @@
       const origin = window.location.origin;
       const body = {
         success_url: origin + '/success?session_id={CHECKOUT_SESSION_ID}',
-        cancel_url: origin + '/'
+        cancel_url: origin + '/#pricing'
       };
       fetch('/api/create-checkout-session', {
         method: 'POST',
@@ -1190,15 +1191,11 @@
             window.location.href = data.url;
             return;
           }
-          // Demo fallback when Stripe is not configured
-          localStorage.setItem('aether_pro', 'true');
-          checkProStatus();
-          showToast('Pro unlocked in demo mode (Stripe not configured).');
+          const detail = (data && data.detail) ? data.detail : 'Stripe is not configured on this station yet.';
+          showToast(typeof detail === 'string' ? detail : 'Stripe is not configured.', true);
         })
         .catch(() => {
-          localStorage.setItem('aether_pro', 'true');
-          checkProStatus();
-          showToast('Pro unlocked in demo mode. Hosted generations available.');
+          showToast('Could not reach checkout.', true);
         });
     }
 
@@ -1242,12 +1239,36 @@
         }
       });
       
-      // Check if coming back from Stripe
-      if (window.location.search.includes('session_id')) {
-        localStorage.setItem('aether_pro', 'true');
-        checkProStatus();
-        history.replaceState({}, '', '/');
-        showToast('Welcome to AETHER Pro!');
+      const boot = new URLSearchParams(window.location.search);
+      const modeId = boot.get('mode');
+      const q = boot.get('q') || boot.get('claim');
+      if (modeId) {
+        const m = CORE_MODES.find(x => x.id === modeId);
+        if (m) selectMode(m, { scroll: false });
+      }
+      if (q) {
+        const input = document.getElementById('input-text');
+        if (input) input.value = q;
+      }
+      if (modeId || q) {
+        history.replaceState({}, '', window.location.pathname);
+        if (q) setTimeout(() => smoothScroll('workspace'), 200);
+      }
+
+      const sid = boot.get('session_id');
+      if (sid) {
+        fetch('/api/billing/verify?session_id=' + encodeURIComponent(sid))
+          .then(r => r.json())
+          .then(data => {
+            if (data.pro) {
+              localStorage.setItem('aether_pro', 'true');
+              localStorage.setItem('aether_checkout_session', sid);
+              checkProStatus();
+              showToast('Pro is live. Hosted runs unlocked.');
+            }
+            history.replaceState({}, '', '/');
+          })
+          .catch(() => history.replaceState({}, '', '/'));
       }
 
       // Modal backdrop close

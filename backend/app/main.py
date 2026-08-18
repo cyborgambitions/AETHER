@@ -44,6 +44,7 @@ class GenerateRequest(BaseModel):
     api_key: Optional[str] = Field(None, description="Bring your own xAI API key (recommended for production use)")
     temperature: float = 0.7
     use_hosted: bool = Field(False, description="Use server-hosted key (Pro feature)")
+    checkout_session_id: Optional[str] = Field(None, description="Stripe Checkout session proving Pro")
 
 class GenerateResponse(BaseModel):
     output: str
@@ -152,6 +153,9 @@ async def generate(req: GenerateRequest):
     # Determine which key to use
     effective_api_key = sanitize_api_key(req.api_key)
     if req.use_hosted:
+        if stripe.api_key and STRIPE_PRO_PRICE_ID:
+            if not _checkout_is_pro(req.checkout_session_id):
+                raise HTTPException(402, "Hosted Pro requires an active AETHER subscription.")
         server_key = sanitize_api_key(os.getenv("XAI_API_KEY"))
         if server_key:
             effective_api_key = server_key
@@ -247,12 +251,28 @@ class CheckoutRequest(BaseModel):
     success_url: Optional[str] = None
     cancel_url: Optional[str] = None
 
+
+def _checkout_is_pro(session_id: Optional[str]) -> bool:
+    if not session_id or not stripe.api_key:
+        return False
+    try:
+        sess = stripe.checkout.Session.retrieve(session_id)
+    except Exception:
+        return False
+    paid = sess.get("payment_status") in ("paid", "no_payment_required")
+    complete = sess.get("status") == "complete"
+    return bool(paid or complete)
+
+
 @app.post("/api/create-checkout-session")
 async def create_checkout_session(req: CheckoutRequest):
     """Create a Stripe Checkout session for AETHER Pro."""
     if not stripe.api_key or not STRIPE_PRO_PRICE_ID:
-        raise HTTPException(500, "Stripe not configured on this server. Set STRIPE_SECRET_KEY and STRIPE_PRO_PRICE_ID.")
+        raise HTTPException(503, "Stripe is not configured. Set STRIPE_SECRET_KEY and STRIPE_PRO_PRICE_ID on the server.")
 
+    origin = (FRONTEND_URL or "").rstrip("/")
+    success_url = req.success_url or f"{origin}/success?session_id={{CHECKOUT_SESSION_ID}}"
+    cancel_url = req.cancel_url or f"{origin}/#pricing"
     try:
         session = stripe.checkout.Session.create(
             payment_method_types=["card"],
@@ -261,32 +281,77 @@ async def create_checkout_session(req: CheckoutRequest):
                 "quantity": 1,
             }],
             mode="subscription",
-            success_url=req.success_url or f"{FRONTEND_URL}/success?session_id={{CHECKOUT_SESSION_ID}}",
-            cancel_url=req.cancel_url or f"{FRONTEND_URL}/",
-            metadata={"product": "aether-pro"}
+            success_url=success_url,
+            cancel_url=cancel_url,
+            metadata={"product": "aether-pro"},
+            allow_promotion_codes=True,
         )
-        return {"url": session.url, "id": session.id}
+        return {"url": session.url, "id": session.id, "configured": True}
     except Exception as e:
         raise HTTPException(400, f"Stripe error: {str(e)}")
 
+
+@app.get("/api/billing/verify")
+def verify_billing(session_id: str = Query(...)):
+    """Confirm a Checkout session actually paid before unlocking Pro in the browser."""
+    if not stripe.api_key:
+        raise HTTPException(503, "Stripe is not configured.")
+    if not _checkout_is_pro(session_id):
+        return {"pro": False, "session_id": session_id}
+    return {"pro": True, "session_id": session_id}
+
+
 @app.get("/success", response_class=HTMLResponse)
-def success(session_id: str = Query(None)):
-    """Success page after Stripe checkout. In real app you would verify the session and mark user as Pro."""
-    html = f"""
-    <html>
-    <head><title>AETHER Pro Activated</title></head>
-    <body style="background:#0a0b0f;color:#ddd;font-family:sans-serif;padding:40px;text-align:center">
-        <h1 style="color:#6366f1">🎉 Welcome to AETHER Pro!</h1>
-        <p>Your payment was successful (session: {session_id or 'demo'}).</p>
-        <p>In this demo, Pro features are unlocked in your browser.</p>
-        <script>
-            localStorage.setItem('aether_pro', 'true');
-            setTimeout(() => window.location.href = '/', 2500);
-        </script>
-        <p>Redirecting to AETHER...</p>
-    </body>
-    </html>
-    """
+def success():
+    """Post-checkout landing. Browser verifies the session with Stripe before unlocking Pro."""
+    html = """<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AETHER · Access</title>
+<style>
+  html,body{margin:0;min-height:100%;background:#02040a;color:#e8eef4;font-family:system-ui,sans-serif;display:flex;align-items:center;justify-content:center}
+  .box{max-width:28rem;padding:2.5rem;text-align:center}
+  h1{font-weight:400;font-size:1.75rem;letter-spacing:-0.02em}
+  p{color:rgba(255,255,255,.55);line-height:1.6}
+  a{color:#8ad4ff}
+</style>
+</head><body>
+<div class="box">
+  <p style="letter-spacing:3px;font-size:12px;color:#8ad4ff">ACCESS</p>
+  <h1 id="t">Confirming orbit…</h1>
+  <p id="s">Checking payment with Stripe.</p>
+</div>
+<script>
+(async function () {
+  const params = new URLSearchParams(location.search);
+  const sessionId = params.get('session_id');
+  const t = document.getElementById('t');
+  const s = document.getElementById('s');
+  if (!sessionId) {
+    t.textContent = 'No session.';
+    s.innerHTML = '<a href="/#pricing">Return to Access</a>';
+    return;
+  }
+  try {
+    const r = await fetch('/api/billing/verify?session_id=' + encodeURIComponent(sessionId));
+    const data = await r.json();
+    if (data.pro) {
+      localStorage.setItem('aether_pro', 'true');
+      localStorage.setItem('aether_checkout_session', sessionId);
+      t.textContent = 'Pro is live.';
+      s.textContent = 'Hosted runs are unlocked. Returning to the deck.';
+      setTimeout(function () { location.href = '/'; }, 1400);
+    } else {
+      t.textContent = 'Payment not confirmed.';
+      s.innerHTML = '<a href="/#pricing">Try Access again</a>';
+    }
+  } catch (e) {
+    t.textContent = 'Could not verify.';
+    s.innerHTML = '<a href="/#pricing">Return to Access</a>';
+  }
+})();
+</script>
+</body></html>"""
     return html
 
 @app.get("/api/usage")
