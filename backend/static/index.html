@@ -20,7 +20,6 @@
   <meta name="apple-mobile-web-app-title" content="AETHER">
   <meta name="application-name" content="AETHER">
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
@@ -81,7 +80,7 @@
       font-synthesis: none;
     }
 
-    .planet-icon {
+    .nlc-icon {
       width: 4.25rem;
       height: 4.25rem;
       border-radius: 9999px;
@@ -90,16 +89,26 @@
       flex-shrink: 0;
       box-shadow: 0 0 0 1px rgba(255,255,255,0.14), 0 0 22px rgba(138, 212, 255, 0.16);
     }
-    .planet-icon img {
+    .nlc-icon img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
     }
-    .planet-icon.rings img { object-fit: contain; }
-    .planet-icon.sm {
+    .nlc-icon.sm {
       width: 2.75rem;
       height: 2.75rem;
+    }
+    .ice-check::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      margin-top: 6px;
+      border-radius: 999px;
+      background: #8ad4ff;
+      box-shadow: 0 0 8px rgba(138, 212, 255, 0.55);
+      flex-shrink: 0;
     }
 
     .mode-title {
@@ -379,7 +388,7 @@
           <div class="relative w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center">
             <div class="absolute inset-0 bg-[#8ad4ff]/30 rounded-2xl blur-md opacity-50"></div>
             <div class="relative w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-[#02040a] flex items-center justify-center border border-white/20">
-              <i class="fa-solid fa-infinity text-2xl sm:text-3xl text-[#8ad4ff]"></i>
+              <span class="text-[#8ad4ff] text-2xl sm:text-3xl leading-none" aria-hidden="true">∞</span>
             </div>
           </div>
           <div>
@@ -390,25 +399,23 @@
 
         <!-- Nav Links -->
         <div class="hidden md:flex items-center gap-x-9 text-sm">
-          <a href="#toolkit" onclick="smoothScroll('toolkit'); return false;" class="nav-link text-white/70 hover:text-white">Toolkit</a>
-          <a href="#explore" onclick="smoothScroll('explore'); return false;" class="nav-link text-white/70 hover:text-white">Explore</a>
-          <a href="#community" onclick="smoothScroll('community'); return false;" class="nav-link text-white/70 hover:text-white">Community</a>
-          <a href="#pricing" onclick="smoothScroll('pricing'); return false;" class="nav-link text-white/70 hover:text-white">Pro</a>
+          <a href="#toolkit" onclick="smoothScroll('toolkit'); return false;" class="nav-link text-white/70 hover:text-white">Deck</a>
+          <a href="#explore" onclick="smoothScroll('explore'); return false;" class="nav-link text-white/70 hover:text-white">Path</a>
+          <a href="#community" onclick="smoothScroll('community'); return false;" class="nav-link text-white/70 hover:text-white">Log</a>
+          <a href="#pricing" onclick="smoothScroll('pricing'); return false;" class="nav-link text-white/70 hover:text-white">Access</a>
         </div>
 
         <div class="flex items-center gap-2 sm:gap-3">
           <!-- Pro Status -->
           <div onclick="showPricing()" id="pro-pill" 
                class="hidden items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full text-xs font-medium cursor-pointer bg-white/5 border border-white/10 hover:border-white/30 transition">
-            <i class="fa-solid fa-crown text-[#8ad4ff]"></i>
-            <span class="font-medium">PRO</span>
+            <span class="font-medium tracking-[1.5px]">PRO</span>
           </div>
 
           <!-- API Key -->
           <button onclick="showApiKeyModal()" 
                   class="flex items-center gap-2 sm:gap-2.5 px-3 sm:px-5 h-9 sm:h-10 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition text-sm">
-            <i class="fa-solid fa-key text-[#67f6ff]"></i>
-            <span id="key-status" class="text-sm hidden sm:inline">Connect Key</span>
+            <span id="key-status" class="text-sm hidden sm:inline tracking-[1.2px]">Connect Key</span>
           </button>
         </div>
       </div>
@@ -436,22 +443,21 @@
       <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
         <button onclick="smoothScroll('workspace')" 
                 class="btn-shine group flex items-center gap-3 bg-white text-[#02040a] px-8 h-14 rounded-3xl text-[15px] font-semibold active:scale-[0.985] w-full sm:w-auto justify-center">
-          Begin Exploration
-          <i class="fa-solid fa-arrow-right group-active:translate-x-0.5 transition"></i>
+          Enter deck
+          <span class="opacity-70 group-active:translate-x-0.5 transition" aria-hidden="true">→</span>
         </button>
         
         <button onclick="useRandomPrompt()" 
                 class="flex items-center gap-3 px-7 h-14 rounded-3xl border border-white/20 hover:bg-white/5 text-sm font-medium w-full sm:w-auto justify-center transition backdrop-blur-md bg-black/25">
-          <i class="fa-solid fa-satellite"></i>
-          <span>Surprise me</span>
+          <span>Random vector</span>
         </button>
       </div>
       
-      <div class="flex flex-wrap justify-center gap-x-8 gap-y-3 mt-12 text-xs text-white/45">
-        <div class="flex items-center gap-1.5"><i class="fa-solid fa-globe text-[#8ad4ff]/80"></i> 6 MODES</div>
-        <div class="flex items-center gap-1.5"><i class="fa-solid fa-users text-white/50"></i> COMMUNITY</div>
-        <div class="flex items-center gap-1.5"><i class="fa-solid fa-infinity text-white/50"></i> UNLIMITED DEPTH</div>
-        <div class="flex items-center gap-1.5"><i class="fa-solid fa-bolt text-[#8ad4ff]/80"></i> POWERED BY SPACEXAI</div>
+      <div class="flex flex-wrap justify-center gap-x-8 gap-y-3 mt-12 text-xs tracking-[2px] text-white/45">
+        <div>SIX MODES</div>
+        <div>FLIGHT LOG</div>
+        <div>UNLIMITED DEPTH</div>
+        <div class="text-[#8ad4ff]/80">SPACEXAI</div>
       </div>
     </div>
   </div>
@@ -465,7 +471,7 @@
       </div>
       <button onclick="document.getElementById('workspace').scrollIntoView({behavior:'smooth'})" 
               class="hidden md:flex items-center gap-2 text-sm px-5 py-2.5 rounded-2xl border border-white/10 hover:bg-white/5">
-        Open full workspace <i class="fa-solid fa-arrow-right ml-1"></i>
+        Open console <span class="opacity-60" aria-hidden="true">→</span>
       </button>
     </div>
 
@@ -481,9 +487,9 @@
       <div class="bg-[#060a12]/85 rounded-[22px] p-7">
         <div id="selected-mode-header" class="mb-4">
           <div class="flex items-center gap-3">
-            <div id="selected-icon" class="planet-icon sm"></div>
+            <div id="selected-icon" class="nlc-icon sm"></div>
             <div>
-              <div id="selected-title" class="mode-title text-2xl">Choose a mode</div>
+              <div id="selected-title" class="mode-title text-2xl">Standby</div>
               <div id="selected-desc" class="text-sm text-white/50"></div>
             </div>
           </div>
@@ -492,7 +498,7 @@
         <div class="space-y-4">
           <div>
             <label for="input-text" class="flex items-center justify-between mb-2 text-xs uppercase tracking-widest text-white/50 cursor-pointer">
-              <div>INPUT</div>
+              <div>SIGNAL</div>
               <div id="placeholder-hint" class="normal-case font-normal text-white/30"></div>
             </label>
             <textarea id="input-text" rows="5" 
@@ -503,7 +509,7 @@
           <div class="flex flex-col sm:flex-row sm:items-end gap-4">
             <div class="flex-1 min-w-[180px]">
               <label for="temperature" class="flex justify-between text-xs mb-1.5 cursor-pointer text-white/50">
-                <span>Creativity</span>
+                <span>Delta</span>
                 <span id="temp-value" class="font-mono text-[#67f6ff]">0.7</span>
               </label>
               <input type="range" id="temperature" min="0" max="1.2" step="0.05" value="0.7" 
@@ -511,7 +517,7 @@
             </div>
             <label for="use-hosted" class="flex items-center gap-2 cursor-pointer text-sm pb-1">
               <input type="checkbox" id="use-hosted" class="accent-[#67f6ff]" onchange="updateHostedStatus()">
-              <span>Use Hosted (Pro)</span>
+              <span>Hosted (Pro)</span>
               <span id="hosted-badge" class="text-[10px] px-2.5 py-px rounded bg-[#8ad4ff]/10 text-[#8ad4ff] hidden">PRO</span>
             </label>
           </div>
@@ -519,8 +525,8 @@
           <div class="flex items-center gap-3">
             <button onclick="runGenerate()" 
                     class="flex-1 h-14 bg-white text-[#02040a] font-semibold rounded-2xl flex items-center justify-center gap-3 active:scale-[0.985] text-[15px] transition hover:bg-[#dce8f2]">
-              <span id="generate-text">GENERATE WITH SPACEXAI</span>
-              <i class="fa-solid fa-arrow-right"></i>
+              <span id="generate-text">IGNITE</span>
+              <span class="opacity-50" aria-hidden="true">→</span>
             </button>
             
             <button onclick="clearWorkspace()" 
@@ -534,19 +540,19 @@
       <div id="output-panel" class="hidden mt-1.5 bg-[#060a12]/90 rounded-[22px] p-6 border border-white/10">
         <div class="flex justify-between items-center mb-3 px-1">
           <div class="flex items-center gap-3">
-            <div class="font-semibold text-sm tracking-widest">OUTPUT • FIRST PRINCIPLES</div>
+            <div class="font-semibold text-sm tracking-widest">TELEMETRY</div>
             <div id="output-meta" class="text-xs px-3 py-0.5 bg-white/5 rounded-full font-mono text-[#67f6ff]"></div>
           </div>
           
           <div class="flex gap-2">
-            <button onclick="copyOutput()" class="text-xs px-4 h-9 rounded-2xl border border-white/10 flex items-center gap-2 hover:bg-white/5">
-              <i class="fa-regular fa-copy"></i> <span>COPY</span>
+            <button onclick="copyOutput()" class="text-xs px-4 h-9 rounded-2xl border border-white/10 flex items-center gap-2 hover:bg-white/5 tracking-[1.5px]">
+              COPY
             </button>
-            <button onclick="chainOutput()" class="text-xs px-4 h-9 rounded-2xl border border-white/10 flex items-center gap-2 hover:bg-white/5">
-              <i class="fa-solid fa-link"></i> <span>CHAIN</span>
+            <button onclick="chainOutput()" class="text-xs px-4 h-9 rounded-2xl border border-white/10 flex items-center gap-2 hover:bg-white/5 tracking-[1.5px]">
+              CHAIN
             </button>
-            <button onclick="saveToHistory()" class="text-xs px-4 h-9 rounded-2xl border border-white/10 flex items-center gap-2 hover:bg-white/5">
-              <i class="fa-solid fa-bookmark"></i>
+            <button onclick="saveToHistory()" class="text-xs px-4 h-9 rounded-2xl border border-white/10 flex items-center gap-2 hover:bg-white/5 tracking-[1.5px]">
+              HOLD
             </button>
           </div>
         </div>
@@ -558,38 +564,42 @@
     </div>
   </div>
 
-  <!-- Explore -->
+  <!-- Flight path — three moves that group the six modes -->
   <div id="explore" class="max-w-screen-2xl mx-auto px-6 pb-16 relative z-10">
-    <div class="text-center mb-10">
-      <div class="text-[#67f6ff] tracking-[3px] text-sm">DEEP DIVE</div>
-      <div class="font-display text-4xl sm:text-5xl">How AETHER Works</div>
+    <div class="mb-8 px-1">
+      <div class="text-[#8ad4ff] tracking-[3px] text-sm">FLIGHT PATH</div>
+      <div class="font-display text-4xl sm:text-5xl">Three moves. Six modes.</div>
+      <p class="text-white/50 mt-2 max-w-xl">Every mode is one of these. Same sky, same cards, same console.</p>
     </div>
     
-    <div class="grid md:grid-cols-3 gap-4 max-w-5xl mx-auto">
-      <div class="nlc-card rounded-3xl p-8">
-        <img class="nlc-photo" src="/static/assets/nlc/deconstruct.jpg?v=15" alt="Noctilucent clouds">
-        <div class="nlc-veil"></div>
-        <div class="nlc-copy">
-          <div class="mode-title text-2xl mb-2">Deconstruct</div>
-          <div class="text-white/85">Strip any idea down to its irreducible truths using physics, logic, and human nature.</div>
+    <div class="grid md:grid-cols-3 gap-4">
+      <button type="button" onclick="selectMode(CORE_MODES[0])" class="holo-card mode-card rounded-3xl p-6 text-left cursor-pointer">
+        <div class="flex gap-4">
+          <div class="nlc-icon"><img src="/static/assets/nlc/deconstruct.jpg?v=16" alt=""></div>
+          <div>
+            <div class="mode-title text-xl leading-tight">Deconstruct</div>
+            <div class="text-sm mt-3 text-white/60 leading-snug">First Principles · Question Quality</div>
+          </div>
         </div>
-      </div>
-      <div class="nlc-card rounded-3xl p-8">
-        <img class="nlc-photo" src="/static/assets/nlc/generate.jpg?v=15" alt="Noctilucent clouds">
-        <div class="nlc-veil"></div>
-        <div class="nlc-copy">
-          <div class="mode-title text-2xl mb-2">Generate</div>
-          <div class="text-white/85">Produce novel, testable hypotheses that bridge disconnected domains of knowledge.</div>
+      </button>
+      <button type="button" onclick="selectMode(CORE_MODES[1])" class="holo-card mode-card rounded-3xl p-6 text-left cursor-pointer">
+        <div class="flex gap-4">
+          <div class="nlc-icon"><img src="/static/assets/nlc/generate.jpg?v=16" alt=""></div>
+          <div>
+            <div class="mode-title text-xl leading-tight">Generate</div>
+            <div class="text-sm mt-3 text-white/60 leading-snug">Cosmic Hypothesis · Synthesizer</div>
+          </div>
         </div>
-      </div>
-      <div class="nlc-card rounded-3xl p-8">
-        <img class="nlc-photo" src="/static/assets/nlc/audit.jpg?v=15" alt="Noctilucent clouds">
-        <div class="nlc-veil"></div>
-        <div class="nlc-copy">
-          <div class="mode-title text-2xl mb-2">Audit</div>
-          <div class="text-white/85">Ruthlessly evaluate claims with evidence scoring and bias detection.</div>
+      </button>
+      <button type="button" onclick="selectMode(CORE_MODES[2])" class="holo-card mode-card rounded-3xl p-6 text-left cursor-pointer">
+        <div class="flex gap-4">
+          <div class="nlc-icon"><img src="/static/assets/nlc/audit.jpg?v=16" alt=""></div>
+          <div>
+            <div class="mode-title text-xl leading-tight">Audit</div>
+            <div class="text-sm mt-3 text-white/60 leading-snug">Truth Audit · Consequence Map</div>
+          </div>
         </div>
-      </div>
+      </button>
     </div>
   </div>
 
@@ -598,20 +608,18 @@
     <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
       <div>
         <div class="text-[#8ad4ff] tracking-[3px] text-sm">FLIGHT LOG</div>
-        <div class="font-display text-4xl sm:text-5xl">Community & History</div>
-        <p class="text-white/50 mt-2 max-w-xl">Recent research sessions and community prompt energy — live from this instance.</p>
+        <div class="font-display text-4xl sm:text-5xl">Sessions</div>
+        <p class="text-white/50 mt-2 max-w-xl">Recent runs and shared vectors — live from this station.</p>
       </div>
-      <button onclick="loadCommunity()" class="self-start md:self-auto px-5 h-11 rounded-2xl border border-white/15 hover:bg-white/5 text-sm flex items-center gap-2 transition">
-        <i class="fa-solid fa-arrows-rotate"></i> Refresh
+      <button onclick="loadCommunity()" class="self-start md:self-auto px-5 h-11 rounded-2xl border border-white/15 hover:bg-white/5 text-sm flex items-center gap-2 transition tracking-[1.5px]">
+        Refresh
       </button>
     </div>
 
     <div class="grid lg:grid-cols-2 gap-5">
       <div class="glass rounded-3xl p-6 border border-white/10">
         <div class="flex items-center justify-between mb-4">
-          <div class="font-semibold text-lg flex items-center gap-2">
-            <i class="fa-solid fa-clock-rotate-left text-[#67f6ff]"></i> Recent Sessions
-          </div>
+          <div class="font-semibold text-lg tracking-tight">Recent sessions</div>
           <span id="session-count" class="text-xs text-white/40">—</span>
         </div>
         <div id="history-list" class="space-y-3 max-h-[360px] overflow-auto pr-1">
@@ -621,9 +629,7 @@
 
       <div class="glass rounded-3xl p-6 border border-white/10">
         <div class="flex items-center justify-between mb-4">
-          <div class="font-semibold text-lg flex items-center gap-2">
-            <i class="fa-solid fa-users text-[#8ad4ff]"></i> Prompt Library
-          </div>
+          <div class="font-semibold text-lg tracking-tight">Vector library</div>
           <button onclick="showSubmitPrompt()" class="text-xs px-3 h-8 rounded-xl bg-white/5 border border-white/10 hover:border-[#8ad4ff]/40 transition">
             + Submit
           </button>
@@ -651,9 +657,9 @@
         </div>
         <div class="my-6 text-white/70">Bring your own xAI key. Perfect for deep personal exploration.</div>
         <ul class="space-y-[9px] text-sm mb-8">
-          <li class="flex gap-3"><i class="fa-solid fa-check text-[#67f6ff] mt-1"></i> All 6 modes + community</li>
-          <li class="flex gap-3"><i class="fa-solid fa-check text-[#67f6ff] mt-1"></i> Unlimited with your own key</li>
-          <li class="flex gap-3"><i class="fa-solid fa-check text-[#67f6ff] mt-1"></i> Full history &amp; chaining</li>
+          <li class="flex gap-3 ice-check">All six modes + flight log</li>
+          <li class="flex gap-3 ice-check">Unlimited with your own key</li>
+          <li class="flex gap-3 ice-check">Full history &amp; chaining</li>
         </ul>
         <button onclick="switchToWorkspace()" class="w-full h-12 border border-white/30 rounded-2xl">Start Free</button>
       </div>
@@ -668,15 +674,15 @@
         <div class="my-6 text-white/70">Hosted intelligence. Unlimited depth without managing keys.</div>
         
         <ul class="space-y-[9px] text-sm mb-8">
-          <li class="flex gap-3"><i class="fa-solid fa-check text-[#8ad4ff] mt-1"></i> Unlimited hosted generations</li>
-          <li class="flex gap-3"><i class="fa-solid fa-check text-[#8ad4ff] mt-1"></i> Cloud saved prompts &amp; exports</li>
-          <li class="flex gap-3"><i class="fa-solid fa-check text-[#8ad4ff] mt-1"></i> Advanced chaining &amp; analysis</li>
-          <li class="flex gap-3"><i class="fa-solid fa-check text-[#8ad4ff] mt-1"></i> Priority support</li>
+          <li class="flex gap-3 ice-check">Unlimited hosted generations</li>
+          <li class="flex gap-3 ice-check">Cloud saved prompts &amp; exports</li>
+          <li class="flex gap-3 ice-check">Advanced chaining &amp; analysis</li>
+          <li class="flex gap-3 ice-check">Priority support</li>
         </ul>
         
         <button onclick="upgradeToPro()" 
                 class="w-full h-12 bg-white text-[#02040a] font-semibold rounded-2xl flex items-center justify-center gap-2 hover:bg-[#dce8f2]">
-          <i class="fa-solid fa-arrow-right"></i> <span>Upgrade to Pro</span>
+          <span>Upgrade to Pro</span> <span class="opacity-50" aria-hidden="true">→</span>
         </button>
       </div>
     </div>
@@ -686,7 +692,7 @@
   <footer class="relative z-10 border-t border-white/10 py-12 px-6">
     <div class="max-w-screen-2xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
       <div class="flex items-center gap-3">
-        <i class="fa-solid fa-infinity text-[#67f6ff]"></i>
+        <span class="text-[#67f6ff] text-2xl" aria-hidden="true">∞</span>
         <div>
           <div class="font-display text-2xl">AETHER</div>
           <div class="text-xs text-white/40">The universe is under no obligation to make sense to you… yet.</div>
@@ -697,7 +703,7 @@
         <a href="https://console.x.ai" class="hover:text-[#67f6ff] transition" target="_blank">xAI Console</a>
         <a href="https://github.com/cyborgambitions/AETHER" class="hover:text-[#67f6ff] transition" target="_blank">GitHub</a>
       </div>
-      <div class="text-xs text-white/30">Built for truth-seekers · Powered by SpaceXAI · planets v12</div>
+      <div class="text-xs text-white/30">Built for truth-seekers · Powered by SpaceXAI · nlc v16</div>
     </div>
   </footer>
 
@@ -814,19 +820,17 @@
 
     // Core Prompts Data (matches backend)
     const CORE_MODES = [
-      { id: "first-principles-deconstructor", title: "First Principles Deconstructor", planet: "/static/assets/planets/earth.jpg?v=12", planetAlt: "Earth", category: "core", desc: "Strip any concept to its unbreakable fundamentals.", placeholder: "e.g. Why is AI alignment so difficult?" },
-      { id: "cosmic-hypothesis-generator", title: "Cosmic Hypothesis Generator", planet: "/static/assets/planets/jupiter.jpg?v=12", planetAlt: "Jupiter", category: "discovery", desc: "Invent bold, falsifiable ideas across domains.", placeholder: "e.g. Origin of life" },
-      { id: "truth-audit-engine", title: "Truth Audit Engine", planet: "/static/assets/planets/moon.jpg?v=12", planetAlt: "Moon", category: "audit", desc: "Maximum truth-seeking audit of any claim.", placeholder: "Paste a claim here" },
-      { id: "civilizational-consequence-mapper", title: "Civilizational Consequence Mapper", planet: "/static/assets/planets/mars.jpg?v=12", planetAlt: "Mars", category: "longterm", desc: "Map 2nd–4th order effects over 50–100 years.", placeholder: "e.g. CRISPR gene editing" },
-      { id: "interdisciplinary-synthesizer", title: "Interdisciplinary Synthesizer", planet: "/static/assets/planets/saturn.jpg?v=12", planetAlt: "Saturn", planetClass: "rings", category: "connection", desc: "Find hidden structural bridges between fields.", placeholder: "Field A and Field B" },
-      { id: "question-quality-amplifier", title: "Question Quality Amplifier", planet: "/static/assets/planets/neptune.jpg?v=12", planetAlt: "Neptune", category: "meta", desc: "Transform weak questions into profound ones.", placeholder: "Your current question" }
+      { id: "first-principles-deconstructor", title: "First Principles Deconstructor", cloud: "/static/assets/nlc/deconstruct.jpg?v=16", category: "core", desc: "Strip any concept to its unbreakable fundamentals.", placeholder: "e.g. Why is AI alignment so difficult?" },
+      { id: "cosmic-hypothesis-generator", title: "Cosmic Hypothesis Generator", cloud: "/static/assets/nlc/generate.jpg?v=16", category: "discovery", desc: "Invent bold, falsifiable ideas across domains.", placeholder: "e.g. Origin of life" },
+      { id: "truth-audit-engine", title: "Truth Audit Engine", cloud: "/static/assets/nlc/audit.jpg?v=16", category: "audit", desc: "Maximum truth-seeking audit of any claim.", placeholder: "Paste a claim here" },
+      { id: "civilizational-consequence-mapper", title: "Civilizational Consequence Mapper", cloud: "/static/assets/nlc/consequence.jpg?v=16", category: "longterm", desc: "Map 2nd–4th order effects over 50–100 years.", placeholder: "e.g. CRISPR gene editing" },
+      { id: "interdisciplinary-synthesizer", title: "Interdisciplinary Synthesizer", cloud: "/static/assets/nlc/synthesizer.jpg?v=16", category: "connection", desc: "Find hidden structural bridges between fields.", placeholder: "Field A and Field B" },
+      { id: "question-quality-amplifier", title: "Question Quality Amplifier", cloud: "/static/assets/nlc/amplifier.jpg?v=16", category: "meta", desc: "Transform weak questions into profound ones.", placeholder: "Your current question" }
     ];
 
-    function planetImg(mode, extraClass = '') {
-      if (mode.planet) {
-        return `<div class="planet-icon ${mode.planetClass || ''} ${extraClass}"><img src="${mode.planet}" alt="${mode.planetAlt || ''}"></div>`;
-      }
-      return `<div class="planet-icon ${extraClass} flex items-center justify-center text-[#67f6ff]"><i class="fa-solid ${mode.icon || 'fa-globe'}"></i></div>`;
+    function nlcImg(mode, extraClass = '') {
+      const src = mode.cloud || '/static/assets/nlc/deconstruct.jpg?v=16';
+      return `<div class="nlc-icon ${extraClass}"><img src="${src}" alt=""></div>`;
     }
 
     let currentMode = null;
@@ -842,12 +846,12 @@
         el.className = `holo-card mode-card rounded-3xl p-6 cursor-pointer group`;
         el.innerHTML = `
           <div class="flex gap-4">
-            ${planetImg(mode)}
+            ${nlcImg(mode)}
             <div>
               <div class="mode-title text-xl leading-tight">${mode.title}</div>
               <div class="text-sm mt-3 text-white/60 leading-snug">${mode.desc}</div>
-              <div class="mt-5 text-xs text-[#67f6ff]/70 group-hover:text-[#67f6ff] flex items-center gap-1">
-                Use this mode <i class="fa-solid fa-arrow-right text-xs ml-0.5"></i>
+              <div class="mt-5 text-xs text-[#67f6ff]/70 group-hover:text-[#67f6ff] tracking-[1.5px]">
+                Engage →
               </div>
             </div>
           </div>
@@ -871,11 +875,8 @@
       document.getElementById('placeholder-hint').innerHTML = mode.placeholder;
       
       const iconContainer = document.getElementById('selected-icon');
-      if (mode.planet) {
-        iconContainer.innerHTML = `<img src="${mode.planet}" alt="${mode.planetAlt || ''}">`;
-      } else {
-        iconContainer.innerHTML = `<i class="fa-solid ${mode.icon || 'fa-globe'} text-[#67f6ff]"></i>`;
-      }
+      const src = mode.cloud || '/static/assets/nlc/deconstruct.jpg?v=16';
+      iconContainer.innerHTML = `<img src="${src}" alt="">`;
 
       highlightModeCard(mode.id);
 
@@ -898,10 +899,10 @@
       
       if (isHosted) {
         badge.classList.remove('hidden');
-        btn.innerText = 'GENERATE HOSTED (PRO)';
+        btn.innerText = 'IGNITE · HOSTED';
       } else {
         badge.classList.add('hidden');
-        btn.innerText = 'GENERATE WITH SPACEXAI';
+        btn.innerText = 'IGNITE';
       }
     }
 
@@ -912,7 +913,7 @@
         return;
       }
       if (!currentMode) {
-        showToast('Select a mode from the toolkit first.', true);
+        showToast('Engage a mode from the deck first.', true);
         return;
       }
       
@@ -942,7 +943,6 @@
       outputPanel.classList.remove('hidden');
       outputEl.innerHTML = `
         <div class="flex items-center gap-3 text-[#67f6ff]">
-          <i class="fa-solid fa-satellite fa-spin"></i> 
           <span>Scanning the structure of reality…</span>
         </div>
       `;
@@ -989,10 +989,10 @@
         loadCommunity();
         
       } catch (err) {
-        outputEl.innerHTML = `<div class="text-red-400"><i class="fa-solid fa-triangle-exclamation mr-2"></i>${err.message}</div>`;
+        outputEl.innerHTML = `<div class="text-red-400">${err.message}</div>`;
         showToast(err.message, true);
       } finally {
-        if (genBtn) genBtn.innerText = prevLabel || 'GENERATE WITH SPACEXAI';
+        if (genBtn) genBtn.innerText = prevLabel || 'IGNITE';
       }
     }
 
@@ -1089,7 +1089,7 @@
             return `<div class="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
               <div class="flex justify-between gap-2 mb-1">
                 <div class="font-medium text-sm">${title}</div>
-                <button type="button" class="text-[11px] text-[#c084fc] hover:underline" data-vote-idx="${i}"><i class="fa-solid fa-arrow-up"></i> ${p.votes || 0}</button>
+                <button type="button" class="text-[11px] text-[#8ad4ff] hover:underline tracking-wide" data-vote-idx="${i}">▲ ${p.votes || 0}</button>
               </div>
               <div class="text-xs text-white/45 mb-3">${desc || 'Community template'}</div>
               <button type="button" class="text-xs px-3 h-8 rounded-xl border border-white/10 hover:border-[#67f6ff]/40 transition" data-use-idx="${i}">Use mode</button>
@@ -1139,7 +1139,7 @@
         currentMode = {
           id: p.id,
           title: p.title,
-          icon: 'fa-users',
+          cloud: '/static/assets/nlc/generate.jpg?v=16',
           desc: p.description || 'Community prompt',
           placeholder: p.placeholder_hint || 'Enter your input'
         };
