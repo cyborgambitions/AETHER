@@ -28,16 +28,20 @@
   <style>
     :root {
       --bg: #02040a;
-      --card: rgba(6, 10, 18, 0.72);
+      --card: rgba(6, 10, 18, 0.55);
       --accent: #8ad4ff;
       --steel: #c5d0dc;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --t: 240ms;
     }
     
     body {
       font-family: 'Satoshi', system-ui, sans-serif;
+      font-weight: 400;
       background: #02040a;
       -webkit-font-smoothing: antialiased;
       font-feature-settings: "kern" 1, "liga" 1;
+      line-height: 1.7;
     }
 
     ::selection {
@@ -56,22 +60,10 @@
 
     textarea:focus, input:focus {
       outline: none;
-      box-shadow: 0 0 0 1px rgba(138, 212, 255, 0.4), 0 0 24px rgba(138, 212, 255, 0.08);
+      box-shadow: 0 0 0 1px rgba(138, 212, 255, 0.35);
     }
 
-    .btn-shine {
-      position: relative;
-      overflow: hidden;
-    }
-    .btn-shine::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.35) 50%, transparent 60%);
-      transform: translateX(-120%);
-      transition: transform 0.6s ease;
-    }
-    .btn-shine:hover::after { transform: translateX(120%); }
+    button { transition: background-color var(--t) var(--ease), border-color var(--t) var(--ease), color var(--t) var(--ease); }
     
     .font-display {
       font-family: 'Instrument Serif', 'Palatino Linotype', Palatino, Georgia, serif;
@@ -80,14 +72,23 @@
       font-synthesis: none;
     }
 
+    .section-title {
+      font-family: 'Instrument Serif', 'Palatino Linotype', Palatino, Georgia, serif;
+      font-weight: 400;
+      font-size: 2rem;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      font-synthesis: none;
+    }
+
     .nlc-icon {
-      width: 4.25rem;
-      height: 4.25rem;
+      width: 3.75rem;
+      height: 3.75rem;
       border-radius: 9999px;
       overflow: hidden;
       background: #000;
       flex-shrink: 0;
-      box-shadow: 0 0 0 1px rgba(255,255,255,0.14), 0 0 22px rgba(138, 212, 255, 0.16);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.12);
     }
     .nlc-icon img {
       width: 100%;
@@ -121,8 +122,10 @@
     .hero-title {
       font-family: 'Instrument Serif', 'Palatino Linotype', Palatino, Georgia, serif;
       font-weight: 400;
-      letter-spacing: -0.015em;
+      letter-spacing: -0.02em;
       font-synthesis: none;
+      font-size: clamp(3rem, 8vw, 6rem);
+      line-height: 1.08;
     }
 
     .starfield {
@@ -130,7 +133,7 @@
       inset: 0;
       pointer-events: none;
       z-index: 2;
-      opacity: 0.45;
+      opacity: 0.22;
     }
 
     .cosmos-stack {
@@ -178,12 +181,11 @@
       overflow: hidden;
       min-height: 240px;
       background: #02040a !important;
-      border: 1px solid rgba(103, 246, 255, 0.15);
-      transition: transform 0.3s, border-color 0.3s;
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: border-color var(--t) var(--ease);
     }
     .nlc-card:hover {
-      transform: translateY(-2px);
-      border-color: rgba(103, 246, 255, 0.4);
+      border-color: rgba(138, 212, 255, 0.45);
     }
     .nlc-card img.nlc-photo {
       position: absolute;
@@ -205,75 +207,31 @@
     }
 
     .glass {
-      background: rgba(6, 10, 18, 0.72);
-      backdrop-filter: blur(22px);
+      background: rgba(6, 10, 18, 0.52);
+      backdrop-filter: blur(18px);
       border: 1px solid rgba(255,255,255,0.08);
     }
 
     .holo-card {
       position: relative;
-      background: rgba(12, 12, 26, 0.8);
-      border: 1px solid rgba(103, 246, 255, 0.15);
-      transition: all 0.3s cubic-bezier(0.23, 1.0, 0.32, 1);
+      background: rgba(2, 4, 10, 0.48);
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: border-color var(--t) var(--ease), background-color var(--t) var(--ease);
       overflow: hidden;
     }
 
-    .holo-card::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: linear-gradient(
-        to bottom right,
-        transparent 40%,
-        rgba(103, 246, 255, 0.1) 50%,
-        transparent 60%
-      );
-      transform: rotate(25deg);
-      transition: all 0.6s;
-      opacity: 0;
-    }
-
     .holo-card:hover {
-      border-color: rgba(103, 246, 255, 0.4);
-      box-shadow: 0 0 0 1px rgba(103, 246, 255, 0.2),
-                  0 25px 50px -12px rgb(0 0 0 / 0.4);
-      transform: translateY(-2px);
-    }
-
-    .holo-card:hover::before {
-      animation: holo-sweep 1.2s ease;
-      opacity: 1;
-    }
-
-    @keyframes holo-sweep {
-      0% { transform: translateX(-100%) rotate(25deg); }
-      100% { transform: translateX(200%) rotate(25deg); }
+      border-color: rgba(138, 212, 255, 0.4);
+      background: rgba(2, 4, 10, 0.38);
     }
 
     .futuristic-text {
-      background: linear-gradient(90deg, #ffffff, #b9d7ee, #8ad4ff);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .section-header {
-      font-size: clamp(2.5rem, 6vw, 4.2rem);
-      line-height: 0.95;
-      letter-spacing: -0.05em;
-    }
-
-    .cosmic-glow {
-      box-shadow: 0 0 15px rgba(103, 246, 255, 0.15),
-                  inset 0 1px 0 rgba(255,255,255,0.06);
+      color: #b9d7ee;
     }
 
     .nav-link {
       position: relative;
-      transition: color 0.2s;
+      transition: color var(--t) var(--ease);
     }
     .nav-link:after {
       content: '';
@@ -283,42 +241,24 @@
       width: 0;
       height: 1px;
       background: #8ad4ff;
-      transition: width 0.3s;
+      transition: width var(--t) var(--ease);
     }
     .nav-link:hover:after { width: 100%; }
 
     .mode-card {
-      transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1), 
-                  box-shadow 0.3s, 
-                  border-color 0.3s;
+      transition: border-color var(--t) var(--ease), background-color var(--t) var(--ease);
     }
     .mode-card.active {
-      border-color: #67f6ff;
-      box-shadow: 0 0 0 1px #67f6ff;
-      transform: scale(1.01);
+      border-color: rgba(138, 212, 255, 0.7);
+      box-shadow: 0 0 0 1px rgba(138, 212, 255, 0.35);
     }
 
     .result-panel {
       font-family: 'Satoshi', system-ui, sans-serif;
-      line-height: 1.75;
-      font-size: 1.02rem;
-    }
-
-    .scanline {
-      position: relative;
-    }
-    .scanline::after {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; height: 2px;
-      background: linear-gradient(transparent, rgba(103,246,255,0.3), transparent);
-      animation: scan 2.5s linear infinite;
-      pointer-events: none;
-    }
-
-    @keyframes scan {
-      0% { transform: translateY(-100%); }
-      100% { transform: translateY(400%); }
+      font-weight: 400;
+      line-height: 1.8;
+      font-size: 1.05rem;
+      letter-spacing: 0.01em;
     }
 
     .stat {
@@ -332,15 +272,14 @@
     }
 
     .live-dot {
-      width: 7px; height: 7px;
+      width: 6px; height: 6px;
       border-radius: 999px;
-      background: #00ff9f;
-      box-shadow: 0 0 10px #00ff9f;
-      animation: pulse-dot 1.8s ease-in-out infinite;
+      background: #8ad4ff;
+      animation: pulse-dot 2.4s ease-in-out infinite;
     }
     @keyframes pulse-dot {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.55; transform: scale(0.85); }
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
     }
 
     .toast {
@@ -351,13 +290,12 @@
       z-index: 1000;
       padding: 12px 20px;
       border-radius: 16px;
-      background: rgba(12, 12, 26, 0.92);
-      border: 1px solid rgba(103, 246, 255, 0.35);
+      background: rgba(2, 4, 10, 0.9);
+      border: 1px solid rgba(138, 212, 255, 0.28);
       backdrop-filter: blur(16px);
       color: #fff;
       font-size: 14px;
-      transition: transform 0.35s cubic-bezier(0.23, 1, 0.32, 1);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.45);
+      transition: transform var(--t) var(--ease);
       max-width: min(90vw, 420px);
       text-align: center;
     }
@@ -423,14 +361,14 @@
   </nav>
 
   <!-- Hero -->
-  <div class="relative pt-20 pb-16 px-6 max-w-screen-2xl mx-auto z-10">
-    <div class="max-w-5xl mx-auto text-center pt-10 sm:pt-14">
+  <div class="relative pt-24 pb-24 px-6 max-w-screen-2xl mx-auto z-10">
+    <div class="max-w-4xl mx-auto text-center pt-10 sm:pt-16">
       <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/35 border border-white/15 text-xs tracking-[2.4px] mb-6 backdrop-blur-md">
         <div class="w-1.5 h-1.5 bg-[#8ad4ff] rounded-full"></div>
         <span class="font-medium text-white/80">SPACEXAI · FIRST PRINCIPLES</span>
       </div>
 
-      <h1 class="hero-title text-5xl sm:text-7xl md:text-[96px] leading-[1.08] mb-6">
+      <h1 class="hero-title mb-8">
         The universe<br>
         <span class="futuristic-text italic">doesn't explain itself.</span>
       </h1>
@@ -442,7 +380,7 @@
 
       <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
         <button onclick="smoothScroll('workspace')" 
-                class="btn-shine group flex items-center gap-3 bg-white text-[#02040a] px-8 h-14 rounded-3xl text-[15px] font-semibold active:scale-[0.985] w-full sm:w-auto justify-center">
+                class="group flex items-center gap-3 bg-white text-[#02040a] px-8 h-14 rounded-3xl text-[15px] font-semibold w-full sm:w-auto justify-center hover:bg-[#dce8f2]">
           Enter deck
           <span class="opacity-70 group-active:translate-x-0.5 transition" aria-hidden="true">→</span>
         </button>
@@ -463,11 +401,11 @@
   </div>
 
   <!-- Toolkit Section -->
-  <div id="toolkit" class="max-w-screen-2xl mx-auto px-6 pb-12 relative z-10">
-    <div class="flex items-end justify-between mb-8 px-1">
+  <div id="toolkit" class="max-w-screen-2xl mx-auto px-6 pb-24 relative z-10">
+    <div class="flex items-end justify-between mb-10 px-1">
       <div>
-        <div class="text-[#8ad4ff] text-sm tracking-[3px]">MISSION DECK</div>
-        <div class="font-display text-5xl">Six Modes of Truth</div>
+        <div class="text-[#8ad4ff] text-sm tracking-[3px] mb-2">MISSION DECK</div>
+        <div class="section-title">Six Modes of Truth</div>
       </div>
       <button onclick="document.getElementById('workspace').scrollIntoView({behavior:'smooth'})" 
               class="hidden md:flex items-center gap-2 text-sm px-5 py-2.5 rounded-2xl border border-white/10 hover:bg-white/5">
@@ -476,16 +414,15 @@
     </div>
 
     <!-- Mode Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4" id="mode-grid">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-5" id="mode-grid">
       <!-- Populated by JS -->
     </div>
   </div>
 
   <!-- Workspace -->
-  <div id="workspace" class="max-w-screen-2xl mx-auto px-6 pb-20 relative z-10">
-    <div class="glass rounded-3xl border border-white/10 p-1.5 cosmic-glow">
-      <div class="bg-[#060a12]/85 rounded-[22px] p-7">
-        <div id="selected-mode-header" class="mb-4">
+  <div id="workspace" class="max-w-3xl mx-auto px-6 pb-24 relative z-10">
+    <div class="glass rounded-3xl p-8 sm:p-10">
+        <div id="selected-mode-header" class="mb-6">
           <div class="flex items-center gap-3">
             <div id="selected-icon" class="nlc-icon sm"></div>
             <div>
@@ -524,7 +461,7 @@
 
           <div class="flex items-center gap-3">
             <button onclick="runGenerate()" 
-                    class="flex-1 h-14 bg-white text-[#02040a] font-semibold rounded-2xl flex items-center justify-center gap-3 active:scale-[0.985] text-[15px] transition hover:bg-[#dce8f2]">
+                    class="flex-1 h-14 bg-white text-[#02040a] font-semibold rounded-2xl flex items-center justify-center gap-3 text-[15px] hover:bg-[#dce8f2]">
               <span id="generate-text">IGNITE</span>
               <span class="opacity-50" aria-hidden="true">→</span>
             </button>
@@ -535,44 +472,33 @@
             </button>
           </div>
         </div>
-      </div>
-
-      <div id="output-panel" class="hidden mt-1.5 bg-[#060a12]/90 rounded-[22px] p-6 border border-white/10">
-        <div class="flex justify-between items-center mb-3 px-1">
-          <div class="flex items-center gap-3">
-            <div class="font-semibold text-sm tracking-widest">TELEMETRY</div>
-            <div id="output-meta" class="text-xs px-3 py-0.5 bg-white/5 rounded-full font-mono text-[#67f6ff]"></div>
-          </div>
-          
-          <div class="flex gap-2">
-            <button onclick="copyOutput()" class="text-xs px-4 h-9 rounded-2xl border border-white/10 flex items-center gap-2 hover:bg-white/5 tracking-[1.5px]">
-              COPY
-            </button>
-            <button onclick="chainOutput()" class="text-xs px-4 h-9 rounded-2xl border border-white/10 flex items-center gap-2 hover:bg-white/5 tracking-[1.5px]">
-              CHAIN
-            </button>
-            <button onclick="saveToHistory()" class="text-xs px-4 h-9 rounded-2xl border border-white/10 flex items-center gap-2 hover:bg-white/5 tracking-[1.5px]">
-              HOLD
-            </button>
-          </div>
-        </div>
-        
-        <div id="output-content" 
-             class="result-panel scanline bg-[#05050f] border border-white/5 rounded-2xl p-7 text-[15px] leading-relaxed max-h-[460px] overflow-auto text-white/90">
-        </div>
-      </div>
     </div>
+
+      <div id="output-panel" class="hidden mt-10">
+        <div class="flex justify-between items-center mb-5">
+          <div class="flex items-center gap-3">
+            <div class="text-xs tracking-[3px] text-[#8ad4ff]">TELEMETRY</div>
+            <div id="output-meta" class="text-xs font-mono text-white/40"></div>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="copyOutput()" class="text-xs px-4 h-9 rounded-2xl border border-white/10 hover:bg-white/5 tracking-[1.5px]">COPY</button>
+            <button onclick="chainOutput()" class="text-xs px-4 h-9 rounded-2xl border border-white/10 hover:bg-white/5 tracking-[1.5px]">CHAIN</button>
+            <button onclick="saveToHistory()" class="text-xs px-4 h-9 rounded-2xl border border-white/10 hover:bg-white/5 tracking-[1.5px]">HOLD</button>
+          </div>
+        </div>
+        <div id="output-content" class="result-panel text-white/85 max-h-[520px] overflow-auto"></div>
+      </div>
   </div>
 
   <!-- Flight path — three moves that group the six modes -->
-  <div id="explore" class="max-w-screen-2xl mx-auto px-6 pb-16 relative z-10">
-    <div class="mb-8 px-1">
-      <div class="text-[#8ad4ff] tracking-[3px] text-sm">FLIGHT PATH</div>
-      <div class="font-display text-4xl sm:text-5xl">Three moves. Six modes.</div>
-      <p class="text-white/50 mt-2 max-w-xl">Every mode is one of these. Same sky, same cards, same console.</p>
+  <div id="explore" class="max-w-screen-2xl mx-auto px-6 pb-24 relative z-10">
+    <div class="mb-10 px-1">
+      <div class="text-[#8ad4ff] tracking-[3px] text-sm mb-2">FLIGHT PATH</div>
+      <div class="section-title">Three moves. Six modes.</div>
+      <p class="text-white/50 mt-3 max-w-xl">Every mode is one of these. Same sky, same cards, same console.</p>
     </div>
     
-    <div class="grid md:grid-cols-3 gap-4">
+    <div class="grid md:grid-cols-3 gap-5">
       <button type="button" onclick="selectMode(CORE_MODES[0])" class="holo-card mode-card rounded-3xl p-6 text-left cursor-pointer">
         <div class="flex gap-4">
           <div class="nlc-icon"><img src="/static/assets/nlc/deconstruct.jpg?v=16" alt=""></div>
@@ -604,11 +530,11 @@
   </div>
 
   <!-- Community -->
-  <div id="community" class="max-w-screen-2xl mx-auto px-6 pb-16 relative z-10">
-    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
+  <div id="community" class="max-w-screen-2xl mx-auto px-6 pb-24 relative z-10">
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
       <div>
-        <div class="text-[#8ad4ff] tracking-[3px] text-sm">FLIGHT LOG</div>
-        <div class="font-display text-4xl sm:text-5xl">Sessions</div>
+        <div class="text-[#8ad4ff] tracking-[3px] text-sm mb-2">FLIGHT LOG</div>
+        <div class="section-title">Sessions</div>
         <p class="text-white/50 mt-2 max-w-xl">Recent runs and shared vectors — live from this station.</p>
       </div>
       <button onclick="loadCommunity()" class="self-start md:self-auto px-5 h-11 rounded-2xl border border-white/15 hover:bg-white/5 text-sm flex items-center gap-2 transition tracking-[1.5px]">
@@ -619,7 +545,7 @@
     <div class="grid lg:grid-cols-2 gap-5">
       <div class="glass rounded-3xl p-6 border border-white/10">
         <div class="flex items-center justify-between mb-4">
-          <div class="font-semibold text-lg tracking-tight">Recent sessions</div>
+          <div class="mode-title text-lg">Recent sessions</div>
           <span id="session-count" class="text-xs text-white/40">—</span>
         </div>
         <div id="history-list" class="space-y-3 max-h-[360px] overflow-auto pr-1">
@@ -629,7 +555,7 @@
 
       <div class="glass rounded-3xl p-6 border border-white/10">
         <div class="flex items-center justify-between mb-4">
-          <div class="font-semibold text-lg tracking-tight">Vector library</div>
+          <div class="mode-title text-lg">Vector library</div>
           <button onclick="showSubmitPrompt()" class="text-xs px-3 h-8 rounded-xl bg-white/5 border border-white/10 hover:border-[#8ad4ff]/40 transition">
             + Submit
           </button>
@@ -642,18 +568,18 @@
   </div>
 
   <!-- Pricing -->
-  <div id="pricing" class="max-w-screen-2xl mx-auto px-6 pb-20 relative z-10">
-    <div class="text-center mb-8">
-      <div class="text-sm text-[#8ad4ff] tracking-[2px]">ACCESS</div>
-      <div class="font-display text-4xl sm:text-5xl">Choose your station</div>
+  <div id="pricing" class="max-w-screen-2xl mx-auto px-6 pb-24 relative z-10">
+    <div class="text-center mb-10">
+      <div class="text-sm text-[#8ad4ff] tracking-[2px] mb-2">ACCESS</div>
+      <div class="section-title">Choose your station</div>
     </div>
     
     <div class="grid md:grid-cols-2 gap-5 max-w-3xl mx-auto">
       <!-- Free -->
       <div class="holo-card p-8 rounded-3xl">
         <div class="flex justify-between">
-          <div class="font-semibold text-2xl">Explorer</div>
-          <div><span class="text-4xl font-semibold">Free</span></div>
+          <div class="mode-title text-2xl">Explorer</div>
+          <div><span class="mode-title text-3xl">Free</span></div>
         </div>
         <div class="my-6 text-white/70">Bring your own xAI key. Perfect for deep personal exploration.</div>
         <ul class="space-y-[9px] text-sm mb-8">
@@ -668,8 +594,8 @@
       <div class="holo-card p-8 rounded-3xl border-white/25 relative">
         <div class="absolute top-6 right-6 px-4 py-px text-xs rounded-full bg-white text-black font-medium">RECOMMENDED</div>
         <div class="flex justify-between">
-          <div class="font-semibold text-2xl">Pro</div>
-          <div><span class="text-4xl font-semibold">$9</span><span class="text-white/50">/mo</span></div>
+          <div class="mode-title text-2xl">Pro</div>
+          <div><span class="mode-title text-3xl">$9</span><span class="text-white/50">/mo</span></div>
         </div>
         <div class="my-6 text-white/70">Hosted intelligence. Unlimited depth without managing keys.</div>
         
@@ -703,21 +629,21 @@
         <a href="https://console.x.ai" class="hover:text-[#67f6ff] transition" target="_blank">xAI Console</a>
         <a href="https://github.com/cyborgambitions/AETHER" class="hover:text-[#67f6ff] transition" target="_blank">GitHub</a>
       </div>
-      <div class="text-xs text-white/30">Built for truth-seekers · Powered by SpaceXAI · nlc v16</div>
+      <div class="text-xs text-white/30">Built for truth-seekers · Powered by SpaceXAI · nlc v17</div>
     </div>
   </footer>
 
   <!-- API Key Modal -->
   <div id="key-modal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-[999] p-4">
     <div class="glass rounded-3xl p-8 w-full max-w-md border border-white/10">
-      <div class="font-display text-3xl mb-1">Connect to Grok</div>
+      <div class="mode-title text-2xl mb-1">Connect to Grok</div>
       <div class="text-white/60 mb-6 text-sm">Paste your xAI API key to unlock unlimited first-principles power. Keys stay in your browser only.</div>
       
       <label for="key-input" class="block text-sm mb-1.5 text-white/70">xAI API Key</label>
       <input id="key-input" type="password" class="w-full bg-black/70 font-mono px-5 py-4 rounded-2xl border border-white/10 focus:border-[#67f6ff]" placeholder="xai-..." autocomplete="off" />
       
       <div class="mt-4 flex gap-3">
-        <button onclick="saveApiKey()" class="btn-shine flex-1 bg-white text-black h-12 rounded-2xl font-semibold">Save Key</button>
+        <button onclick="saveApiKey()" class="flex-1 bg-white text-black h-12 rounded-2xl font-semibold hover:bg-[#dce8f2]">Save Key</button>
         <button onclick="hideKeyModal()" class="flex-1 border border-white/20 h-12 rounded-2xl hover:bg-white/5 transition">Cancel</button>
       </div>
       <div class="text-center mt-4 text-xs"><a href="https://console.x.ai" target="_blank" class="text-[#67f6ff] hover:underline">Get your key → console.x.ai</a></div>
@@ -727,7 +653,7 @@
   <!-- Submit Community Prompt Modal -->
   <div id="submit-modal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-[999] p-4">
     <div class="glass rounded-3xl p-8 w-full max-w-lg border border-white/10">
-      <div class="font-display text-3xl mb-1">Submit a Prompt</div>
+      <div class="mode-title text-2xl mb-1">Submit a Prompt</div>
       <div class="text-white/60 mb-6 text-sm">Share a first-principles template. Use <code class="text-[#67f6ff]">{input}</code> where user text goes.</div>
       <div class="space-y-3">
         <input id="submit-title" class="w-full bg-black/70 px-4 py-3 rounded-2xl border border-white/10" placeholder="Title" />
@@ -736,7 +662,7 @@
         <input id="submit-desc" class="w-full bg-black/70 px-4 py-3 rounded-2xl border border-white/10" placeholder="Short description" />
       </div>
       <div class="mt-4 flex gap-3">
-        <button onclick="submitCommunityPrompt()" class="btn-shine flex-1 bg-white text-[#02040a] h-12 rounded-2xl font-semibold">Publish</button>
+        <button onclick="submitCommunityPrompt()" class="flex-1 bg-white text-[#02040a] h-12 rounded-2xl font-semibold hover:bg-[#dce8f2]">Publish</button>
         <button onclick="hideSubmitPrompt()" class="flex-1 border border-white/20 h-12 rounded-2xl hover:bg-white/5 transition">Cancel</button>
       </div>
     </div>
@@ -843,7 +769,7 @@
       CORE_MODES.forEach(mode => {
         const el = document.createElement('div');
         el.dataset.modeId = mode.id;
-        el.className = `holo-card mode-card rounded-3xl p-6 cursor-pointer group`;
+        el.className = `holo-card mode-card rounded-3xl p-7 cursor-pointer group`;
         el.innerHTML = `
           <div class="flex gap-4">
             ${nlcImg(mode)}
